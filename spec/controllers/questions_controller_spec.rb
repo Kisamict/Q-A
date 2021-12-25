@@ -27,6 +27,11 @@ RSpec.describe QuestionsController, type: :controller do
     it 'renders show view' do
       expect(response).to render_template :show
     end
+
+    it 'assigns new question\'s answer to a variable' do
+      expect(assigns(:answer)).to be_a_new Answer
+      expect(assigns(:answer).question).to eq question
+    end
   end
 
   describe 'GET #new' do
