@@ -8,10 +8,11 @@ RSpec.describe AnswersController, type: :controller do
       expect { post :create, params: { answer: attributes_for(:answer), question_id: question } }.to change(question.answers, :count).by(1)
     end
 
-    it 'renders index view' do
+    it 'renders question index view' do
       post :create, params: { answer: attributes_for(:answer), question_id: question } 
 
-      expect(response).to redirect_to assigns(:answer)
+      expect(response).to redirect_to question_path(assigns(:question))
     end
   end
 end
+  

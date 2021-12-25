@@ -4,7 +4,7 @@ class AnswersController < ApplicationController
   def create 
     @answer = @question.answers.create!(answer_params)
 
-    redirect_to question_answer_path(@question, @answer)
+    redirect_to question_path(@question)
   end
 
   private 
