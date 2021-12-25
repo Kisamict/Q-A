@@ -6,7 +6,7 @@ h3 Answers:
   .div
     = answer.body
 
-= form_with model: [question, @answer] do |f|
+= form_with model: [@question, @answer] do |f|
   = f.label :body, 'Body'
   = f.text_area :body
   = f.submit 'Submit'
