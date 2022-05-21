@@ -1,11 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe QuestionsController, type: :controller do
-  let!(:questions) { create_list(:question, 3) }
-  let!(:question)  { questions.sample }
+  let!(:user)           { create(:user) }
+  let!(:user2)          { create(:user) }
+  let!(:questions)      { create_list(:question, 3, user: user) }
+  let!(:question)       { questions.sample }
+  let!(:asnwers)        { create_list(:answer, 3, question: question) }
+  let!(:valid_params)   { { question: attributes_for(:question, user_id: user.id) } }
+  let!(:invalid_params) { { question: attributes_for(:invalid_question) } }
 
   describe 'GET #index' do
-
     before { get :index }
 
     it 'fills questions variable with all questions' do
@@ -24,6 +28,10 @@ RSpec.describe QuestionsController, type: :controller do
       expect(assigns(:question)).to eq question
     end
 
+    it 'assigns requested question answers to @answers variable' do
+      expect(assigns(:answers)).to eq question.answers
+    end
+
     it 'renders show view' do
       expect(response).to render_template :show
     end
@@ -35,14 +43,27 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #new' do
-    before { get :new }
+    context 'user signed in' do
+      before do
+        sign_in user
+        get :new
+      end
 
-    it 'assigns new question to a variable' do
-      expect(assigns(:question)).to be_a_new(Question)
+      it 'assigns new question to a variable' do
+        expect(assigns(:question)).to be_a_new(Question)
+      end
+
+      it 'renders new view' do
+        expect(response).to render_template(:new)
+      end
     end
 
-    it 'renders new view' do
-      expect(response).to render_template(:new)
+    context 'user not signed in' do
+      it 'redirects to sign in page' do
+        get :new
+
+        expect(response).to redirect_to new_user_session_path
+      end
     end
   end
 
@@ -98,39 +119,86 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'POST #create' do
-    context 'with valid params' do
-      it 'creates a new question' do
-        expect { post :create, params: { question: attributes_for(:question) } }.to change(Question, :count).by(1)
+    context 'user authenticated' do
+      before { sign_in user }
+
+      context 'with valid params' do
+        it 'creates a new question' do
+          expect { post :create, params: valid_params }.to change(Question, :count).by(1)
+        end
+  
+        it 'redirects to show view' do
+          post :create, params: valid_params
+          
+          expect(response).to redirect_to assigns(:question)
+        end
       end
 
-      it 'redirects to show view' do
-        post :create, params: { question: attributes_for(:question) }
-        
-        expect(response).to redirect_to assigns(:question)
+      context 'with invalid params' do
+        it 'does not create a new question' do
+          expect { post :create, params: invalid_params }.to_not change(Question, :count)
+        end
+
+        it 're-renders new question view' do
+          post :create, params: invalid_params
+
+          expect(response).to render_template :new
+        end
       end
     end
-    
-    context 'with invalid params' do
+
+    context 'non-unaunthenticated user' do
       it 'does not create a new question' do
-        expect { post :create, params: { question: attributes_for(:invalid_question) } }.to_not change(Question, :count)
+        expect { post :create, params: valid_params }.to_not change(Question, :count)
       end
 
-      it 're-renders new question view' do
-        post :create, params: { question: attributes_for(:invalid_question) }
+      it 'redirects to sing in page' do
+        post :create, params: valid_params
 
-        expect(response).to render_template :new
+        expect(response).to redirect_to new_user_session_path
       end
     end
   end
 
   describe 'DELETE #destroy' do
-    it 'deletes requested question' do
-      expect { post :destroy, params: { id: question } }.to change(Question, :count).by(-1)
+    context 'authenticated user' do
+      context 'user is the author of question' do
+        before { sign_in user }
+  
+        it 'deletes requested question' do
+          expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
+        end
+    
+        it 'renders index view' do
+          delete :destroy, params: { id: question }
+          expect(response).to redirect_to questions_path
+        end
+      end
+  
+      context 'user2 is not the author of question' do
+        before { sign_in user2 }
+  
+        it 'doesn\'t delete requested question' do
+          expect { delete :destroy, params: { id: question } }.to_not change(Question, :count)
+        end
+  
+        it 'renders index view' do
+          post :destroy, params: { id: question }
+          expect(response).to redirect_to questions_path
+        end
+      end
     end
 
-    it 'renders index view' do
-      post :destroy, params: { id: question }
-      expect(response).to redirect_to questions_path
+    context 'unaunthenticated user' do
+      it 'does not delete question' do
+        expect { delete :destroy, params: { id: question } }.to_not change(Question, :count)
+      end
+
+      it 'redirects to sign in page' do
+        delete :destroy, params: { id: question }
+        
+        expect(response).to redirect_to new_user_session_path
+      end
     end
   end
 end

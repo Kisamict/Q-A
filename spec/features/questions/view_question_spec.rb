@@ -6,7 +6,7 @@ feature 'View each question', %q{
   let!(:answers)   { create_list(:answer, 5) }
   let!(:questions) { Question.all }
 
-  scenario 'Users views question and it\'s answers' do
+  scenario 'Users views question' do
     questions.each do |question|
       visit questions_path
 

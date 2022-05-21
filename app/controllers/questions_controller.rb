@@ -1,4 +1,5 @@
 class QuestionsController < ApplicationController
+  before_action :authenticate_user!, only: %i[new create destroy]
   before_action :set_question, only: %i[show edit update destroy]
 
   def index
@@ -6,8 +7,8 @@ class QuestionsController < ApplicationController
   end
 
   def show
-    @answers = @question.answers
     @answer = @question.answers.new
+    @answers = @question.answers.reload
   end
 
   def new
@@ -36,7 +37,12 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
-    @question.destroy
+    if current_user == @question.user
+      @question.destroy
+    else
+      flash[:alert] = 'You are not the author of this question!'
+    end
+
     redirect_to questions_path
   end
 
@@ -45,7 +51,8 @@ class QuestionsController < ApplicationController
   def question_params
     params.require(:question).permit(
       :title,
-      :body
+      :body,
+      :user_id
     )
   end
 

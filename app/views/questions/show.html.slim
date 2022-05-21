@@ -1,12 +1,13 @@
 h1 = @question.title
 p = @question.body
 
-h3 Answers: 
-- @answers.each do |answer|
-  .div
-    = answer.body
+= link_to 'Delete', question_path(@question), method: 'DELETE' if current_user == @question.user
 
-= form_with model: [@question, @answer] do |f|
-  = f.label :body, 'Body'
-  = f.text_area :body
-  = f.submit 'Submit'
+h3 Answers: 
+.answers
+  - @answers.each do |answer|
+    .div
+      = answer.body
+      = link_to 'Delete', question_answer_path(@question, answer), method: 'DELETE' if current_user == answer.user
+
+= render 'answer_form'
