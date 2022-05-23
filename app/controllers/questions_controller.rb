@@ -37,7 +37,7 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
-    if current_user == @question.user
+    if current_user.author_of?(@question)
       @question.destroy
     else
       flash[:alert] = 'You are not the author of this question!'
@@ -51,7 +51,7 @@ class QuestionsController < ApplicationController
   def question_params
     params.require(:question).permit(
       :title,
-      :body,
+      :body
     )
   end
 
