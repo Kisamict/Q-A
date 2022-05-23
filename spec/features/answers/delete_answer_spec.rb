@@ -17,5 +17,7 @@ feature 'delete answer', %q{
     within '.answers' do
       expect { click_on 'Delete' }.to change(question.answers, :count).by(-1)
     end
+
+    expect(page).to_not have_content answer.body
   end
 end

@@ -7,8 +7,8 @@ class QuestionsController < ApplicationController
   end
 
   def show
-    @answer = @question.answers.new
-    @answers = @question.answers.reload
+    @answers = @question.answers
+    @answer = Answer.new
   end
 
   def new
@@ -16,7 +16,7 @@ class QuestionsController < ApplicationController
   end
 
   def create
-    @question = Question.new(question_params)
+    @question = current_user.questions.new(question_params)
 
     if @question.save
       redirect_to @question
@@ -52,7 +52,6 @@ class QuestionsController < ApplicationController
     params.require(:question).permit(
       :title,
       :body,
-      :user_id
     )
   end
 

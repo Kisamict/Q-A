@@ -6,7 +6,7 @@ RSpec.describe QuestionsController, type: :controller do
   let!(:questions)      { create_list(:question, 3, user: user) }
   let!(:question)       { questions.sample }
   let!(:asnwers)        { create_list(:answer, 3, question: question) }
-  let!(:valid_params)   { { question: attributes_for(:question, user_id: user.id) } }
+  let!(:valid_params)   { { question: attributes_for(:question) } }
   let!(:invalid_params) { { question: attributes_for(:invalid_question) } }
 
   describe 'GET #index' do
@@ -38,7 +38,6 @@ RSpec.describe QuestionsController, type: :controller do
 
     it 'assigns new question\'s answer to a variable' do
       expect(assigns(:answer)).to be_a_new Answer
-      expect(assigns(:answer).question).to eq question
     end
   end
 
@@ -131,6 +130,12 @@ RSpec.describe QuestionsController, type: :controller do
           post :create, params: valid_params
           
           expect(response).to redirect_to assigns(:question)
+        end
+
+        it 'makes current user an author of created question' do
+          post :create, params: valid_params
+
+          expect(user).to be_author_of(Question.last)
         end
       end
 

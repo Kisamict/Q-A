@@ -8,7 +8,7 @@ feature 'Create answer', %q{
   let!(:question) { create(:question) }
   let!(:user)     { create(:user) }
   
-  scenario 'Authenticated user creates question' do
+  scenario 'authenticated user creates answer' do
     sign_in(user)
 
     visit question_path(question)
@@ -19,7 +19,17 @@ feature 'Create answer', %q{
     expect(page).to have_content 'New answer body'
   end
 
-  scenario 'Unauthenticated user tries to create a new answer' do
+  scenario 'authenticated user fails to create answer without body' do
+    sign_in(user)
+
+    visit question_path(question)
+    fill_in 'Body', with: ''
+    click_on 'Submit'
+
+    expect(page).to have_content 'Body can\'t be blank'
+  end
+
+  scenario 'unauthenticated user tries to create a new answer' do
     visit question_path(question)
     fill_in 'Body', with: 'New answer body'
 

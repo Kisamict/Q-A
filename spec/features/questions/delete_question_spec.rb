@@ -15,5 +15,6 @@ feature 'Delete question', %q{
     visit question_path(question)
 
     expect { click_on 'Delete' }.to change(Question, :count).by(-1)
+    expect(page).to_not have_content question.title
   end
 end

@@ -7,7 +7,7 @@ RSpec.describe AnswersController, type: :controller do
   let!(:answer)   { create(:answer, question: question, user: user) }
   
   describe 'POST #create' do
-    let!(:valid_params) { { answer: attributes_for(:answer, question_id: question.id, user_id: user.id), question_id: question.id } }
+    let!(:valid_params) { { answer: attributes_for(:answer, question_id: question.id), question_id: question.id } }
 
     context 'authenticated user' do
       before { sign_in user }
@@ -20,6 +20,12 @@ RSpec.describe AnswersController, type: :controller do
         post :create, params: valid_params
 
         expect(response).to redirect_to question_path(assigns(:question))
+      end
+
+      it 'makes current user an author of created answer' do
+        post :create, params: valid_params
+
+        expect(user).to be_author_of Answer.last
       end
     end
 
