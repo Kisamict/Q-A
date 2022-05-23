@@ -1,10 +1,28 @@
 class AnswersController < ApplicationController
-  before_action :set_question, only: %i[create]
+  before_action :authenticate_user!, only: %i[create destroy]
+  before_action :set_question, only: %i[create destroy]
 
   def create 
-    @answer = @question.answers.create!(answer_params)
+    @answer = @question.answers.new(answer_params)
+    @answer.user = current_user
+    
+    if @answer.save
+      redirect_to question_path(@question)
+    else
+      render 'questions/show', locals: { :@answers => @question.answers.reload  }
+    end
+  end
 
-    redirect_to question_answer_path(@question, @answer)
+  def destroy 
+    @answer = Answer.find(params[:id])
+
+    if current_user.author_of?(@answer) 
+      @answer.destroy!
+    else
+      flash[:alert] = 'You are not the author of this answer!'
+    end
+
+    redirect_to question_path(@question)
   end
 
   private 
@@ -16,7 +34,7 @@ class AnswersController < ApplicationController
   def answer_params
     params.require(:answer).permit(
       :body,
-      :question_id
+      :question_id,
     )
   end
 end

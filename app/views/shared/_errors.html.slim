@@ -1,0 +1,5 @@
+- if resource.errors.any? 
+  .div[class="#{resource.class.to_s.downcase}_errors"]
+    ul 
+      - resource.errors.each do |error|
+        li = error.full_message
