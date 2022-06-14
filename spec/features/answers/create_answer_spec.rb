@@ -8,15 +8,18 @@ feature 'Create answer', %q{
   let!(:question) { create(:question) }
   let!(:user)     { create(:user) }
   
-  scenario 'authenticated user creates answer' do
+  scenario 'authenticated user creates answer', js: true do
     sign_in(user)
 
     visit question_path(question)
     fill_in 'Body', with: 'New answer body'
     click_on 'Submit'
 
-    expect(current_path).to eq question_path(question)
-    expect(page).to have_content 'New answer body'
+    within '.answers' do
+      expect(page).to have_content 'New answer body'
+    end
+
+    expect(find_by_id('answer_body').value).to be_empty
   end
 
   scenario 'authenticated user fails to create answer without body' do
