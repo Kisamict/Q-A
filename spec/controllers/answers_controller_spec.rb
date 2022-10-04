@@ -12,18 +12,18 @@ RSpec.describe AnswersController, type: :controller do
     context 'authenticated user' do
       before { sign_in user }
 
-      it 'creates a new answer' do
-        expect { post :create, params: valid_params }.to change(question.answers, :count).by(1)
+      it 'sets a new question\'s answer' do
+        post :create, format: :js, params: valid_params
+        
+        expect(assigns(:answer).question).to eq question 
       end
 
-      it 'renders answer\'s question show view' do
-        post :create, params: valid_params
-
-        expect(response).to redirect_to question_path(assigns(:question))
+      it 'creates a new answer' do
+        expect { post :create, format: :js, params: valid_params }.to change(question.answers, :count).by(1)
       end
 
       it 'makes current user an author of created answer' do
-        post :create, params: valid_params
+        post :create, format: :js, params: valid_params
 
         expect(user).to be_author_of Answer.last
       end
