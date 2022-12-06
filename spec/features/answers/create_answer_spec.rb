@@ -22,7 +22,7 @@ feature 'Create answer', %q{
     expect(find_by_id('answer_body').value).to be_empty
   end
 
-  scenario 'authenticated user fails to create answer without body' do
+  scenario 'authenticated user fails to create answer without body', js: true do
     sign_in(user)
 
     visit question_path(question)

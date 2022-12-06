@@ -5,6 +5,8 @@ class AnswersController < ApplicationController
   def create 
     @answer = @question.answers.new(answer_params)
     @answer.user = current_user
+    @answer.save
+  end
 
    render 'questions/show', locals: { :@answers => @question.answers.reload } unless @answer.save
   end
@@ -25,6 +27,10 @@ class AnswersController < ApplicationController
 
   def set_question
     @question = Question.find(params[:question_id])
+  end
+
+  def set_answer
+    @answer = Answer.find(params[:id])
   end
 
   def answer_params
