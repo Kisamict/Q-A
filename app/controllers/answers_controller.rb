@@ -1,6 +1,7 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!, only: %i[create destroy]
-  before_action :set_question, only: %i[create destroy]
+  before_action :set_question, only: %i[create destroy update]
+  before_action :set_answer, only: %i[edit update]
 
   def create 
     @answer = @question.answers.new(answer_params)
@@ -8,7 +9,8 @@ class AnswersController < ApplicationController
     @answer.save
   end
 
-   render 'questions/show', locals: { :@answers => @question.answers.reload } unless @answer.save
+  def update
+    @answer.update(answer_params)
   end
 
   def destroy 
