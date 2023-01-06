@@ -2,6 +2,6 @@
   $('.answer-errors').html('<%= render 'shared/errors', resource: @answer %>')
 <% else %>
   $('.answers').append("<%= j render(partial: @answer) %>")
-  $('#answer_body').val('')
+  $('textarea#answer_body').val('')
 <% end %>
 
