@@ -18,6 +18,6 @@ document.addEventListener("turbolinks:load", function () {
     e.preventDefault();
 
     $(this).hide();
-    $('#answer-form-' + this.dataset.answerId).show()
+    $('#answer-form-' + this.dataset.answerId).show();
   })
 });

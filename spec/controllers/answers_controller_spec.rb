@@ -50,19 +50,19 @@ RSpec.describe AnswersController, type: :controller do
         before { sign_in user }
 
         it 'assigns request answer to @answer variable' do
-          delete :destroy, params: valid_params
+          delete :destroy, params: valid_params, format: :js
 
           expect(assigns(:answer)).to eq answer
         end
 
         it 'deletes requested answer' do
-          expect { delete :destroy, params: valid_params }.to change(question.answers, :count).by(-1)
+          expect { delete :destroy, params: valid_params, format: :js }.to change(question.answers, :count).by(-1)
         end
 
-        it 'redirects to answer\'s question page' do
-          delete :destroy, params: valid_params
-
-          expect(response).to redirect_to question_path(question)
+        it 'renders destroy template' do
+          delete :destroy, params: valid_params, format: :js
+          
+          expect(response).to render_template :destroy
         end
       end
 
@@ -70,25 +70,25 @@ RSpec.describe AnswersController, type: :controller do
         before { sign_in user2 }
 
         it 'assigns requested answer to @answer variable' do
-          delete :destroy, params: valid_params
+          delete :destroy, params: valid_params, format: :js
 
           expect(assigns(:answer)).to eq answer
         end
 
         it 'does not delete answer' do
-          expect { delete :destroy, params: valid_params }.to_not change(Answer, :count)
+          expect { delete :destroy, params: valid_params, format: :js }.to_not change(Answer, :count)
         end
 
         it 'sets flash alert message' do
-          delete :destroy, params: valid_params
+          delete :destroy, params: valid_params, format: :js
 
           expect(flash[:alert]).to be_present
         end
 
-        it 'redirects to questions page' do
-          delete :destroy, params: valid_params
-
-          expect(response).to redirect_to question_path(question)
+        it 'renders destroy template' do
+          delete :destroy, params: valid_params, format: :js
+          
+          expect(response).to render_template :destroy
         end
       end
     end

@@ -21,8 +21,6 @@ class AnswersController < ApplicationController
     else
       flash[:alert] = 'You are not the author of this answer!'
     end
-
-    redirect_to question_path(@question)
   end
 
   private 
