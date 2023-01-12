@@ -5,4 +5,6 @@ Rails.application.routes.draw do
   resources :questions do
     resources :answers, except: [:edit]
   end
+
+  patch 'mark_best_answer/:id', to: 'answers#mark_best', as: 'answers_mark_best'
 end

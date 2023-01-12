@@ -126,4 +126,54 @@ RSpec.describe AnswersController, type: :controller do
       expect(response).to render_template :update
     end
   end
+
+  describe 'PATCH, #mark_best' do
+    context 'author of question' do
+      let!(:question_author) { question.user }
+
+      before do 
+        sign_in question_author
+        patch :mark_best, params: { id: answer }, format: :js
+      end
+
+      it 'assigns answer to @answer variable' do
+        expect(assigns(:answer)).to eq answer
+      end
+
+      it 'assings question to @question variable' do
+        expect(assigns(:question)).to eq answer.question
+      end
+  
+      it 'changes best? attribute to true' do
+        expect(answer.reload.best?).to eq true
+      end
+
+      it 'renders update template' do
+        expect(response).to render_template :update
+      end
+    end
+
+    context 'user is not question\'s author' do
+      before do
+        sign_in user2
+        patch :mark_best, params: { id: answer }, format: :js
+      end
+
+      it 'assigns answer to @answer variable' do
+        expect(assigns(:answer)).to eq answer
+      end
+
+      it 'assings question to @question variable' do
+        expect(assigns(:question)).to eq answer.question
+      end
+
+      it 'does not changes best? attribute to true' do
+        expect(answer.reload.best?).to be_falsey
+      end
+
+      it 'renders update page' do
+        expect(response).to render_template :update
+      end
+    end
+  end
 end
