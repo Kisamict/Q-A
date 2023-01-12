@@ -12,3 +12,12 @@ import "channels"
 Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
+
+document.addEventListener("turbolinks:load", function () {
+  $('.edit-answer-link').on('click', function (e) {
+    e.preventDefault();
+
+    $(this).hide();
+    $('#answer-form-' + this.dataset.answerId).show();
+  })
+});

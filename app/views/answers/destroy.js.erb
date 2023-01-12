@@ -1,7 +1,5 @@
 <% if @answer.errors.any? %>
   $('.answer-errors').html('<%= render 'shared/errors', resource: @answer %>')
 <% else %>
-  $('.answers').append("<%= j render(partial: @answer) %>")
-  $('textarea#answer_body').val('')
+  $('.answers').html("<%= j render(partial: @question.answers.by_best) %>")
 <% end %>
-

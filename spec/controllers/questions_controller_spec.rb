@@ -75,45 +75,63 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'PATCH #update' do
-    context 'with valid params' do
-      it 'assigns requested question to @question variable' do
-        patch :update, params: { id: question, question: { title: 'New title', body: 'New body' } }
+    context 'user is the author of question' do
+      before { sign_in user }
 
-        expect(assigns(:question)).to eq question
+      context 'with valid params' do
+        it 'assigns requested question to @question variable' do
+          patch :update, params: { id: question, question: { title: 'New title', body: 'New body' } }
+  
+          expect(assigns(:question)).to eq question
+        end
+    
+        it 'updates question attributes' do
+          patch :update, params: { id: question, question: { title: 'New title', body: 'New body' } }
+          
+          question.reload
+  
+          expect(question.title).to eq 'New title'
+          expect(question.body).to eq 'New body'
+        end
+  
+        it 'renders uploaded question view' do
+          patch :update, params: { id: question, question: { title: 'New title', body: 'New body' } }
+  
+          expect(response).to redirect_to question
+        end
       end
   
-      it 'updates question attributes' do
-        patch :update, params: { id: question, question: { title: 'New title', body: 'New body' } }
-        
-        question.reload
-
-        expect(question.title).to eq 'New title'
-        expect(question.body).to eq 'New body'
+      context 'with invalid params' do
+        it 'does not update question attributes' do
+          patch :update, params: { id: question, question: attributes_for(:invalid_question) }
+          
+          question.reload
+  
+          expect(question.title).to_not eq nil
+          expect(question.body).to_not eq nil
+        end
+  
+        it 're-renders edit view' do
+          patch :update, params: { id: question, question: attributes_for(:invalid_question) }
+  
+          expect(response).to render_template :edit
+        end
       end
+    end
 
-      it 'renders uploaded question view' do
+    context 'user is not the author of question' do
+      before { sign_in user2 }
+
+      it 'redirects to question page' do
         patch :update, params: { id: question, question: { title: 'New title', body: 'New body' } }
 
         expect(response).to redirect_to question
       end
-    end
 
-    context 'with invalid params' do
-      it 'does not update question attributes' do
-        patch :update, params: { id: question, question: attributes_for(:invalid_question) }
-        
-        question.reload
-
-        expect(question.title).to_not eq nil
-        expect(question.body).to_not eq nil
+      it 'does not updates question' do
+        expect { patch :update, params: { id: question, question: { title: 'New title', body: 'New body' } } }.to_not change(question, :body)
+        expect { patch :update, params: { id: question, question: { title: 'New title', body: 'New body' } } }.to_not change(question, :title)
       end
-
-      it 're-renders edit view' do
-        patch :update, params: { id: question, question: attributes_for(:invalid_question) }
-
-        expect(response).to render_template :edit
-      end
-      
     end
   end
 

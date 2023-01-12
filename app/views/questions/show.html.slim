@@ -1,11 +1,12 @@
 h1 = @question.title
 p = @question.body
+- if current_user&.author_of?(@question)
+  = link_to 'Edit', edit_question_path(@question)
+  = link_to 'Delete', question_path(@question), method: 'DELETE'
 
-= link_to 'Delete', question_path(@question), method: 'DELETE' if current_user&.author_of?(@question)
-
+h3 Answers:
 .answers
-  h3 Answers:
-  = render @question.answers
+  = render @question.answers.by_best
 
-= render 'shared/errors', resource: @answer
+br
 = render 'questions/answer_form'
