@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+  <title>Bootstrap!</title>
+</head>
+  <body>
+    <!-- navbar - класс навигации. expand - раскрытие, light - тема -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a href="" class="navbar-brand">GooGle!</a>
+        <!-- navbar-toggle - предопледеляет внешний вид кнопки
+        Эта кнопка будет отображаться только в мобильнйо версии сайта и будет отвечать за открытие меню.
+
+        data-target - это указание того элемента, который будет открываться
+        data-toggle="collapse" нужен чтобы JS инициализировал его как коллапс. Т.е. после инициализации эта кнопка сможет
+          переключать видимость элемента указанного в data-target.
+
+        aria-controls - идентифицирует элемент который контролируется текущим элементом когда эта связь не представлена в ДОМ
+        aria-expanded - используется для того чтобы по умолчанию при загрузке страницы меню было закрытым -->
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false">
+          <!-- navbar-toggler-icon создаст класс и иконку-бургер для меню -->
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Здест содержимое, которое будет открываться при нажатии на кнопку. Внимание на айди, он тут как в data-target. -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <!-- mr - марджин райт -->
+          <!-- mb - марджин боттон -->
+          <ul class="navbar-nav mr-auto mb-2">
+            <li class="nav-item">
+              <a href="" class="nav-link">Home</a>
+            </li>
+            <li class="nav-item">
+              <a href="" class="nav-link">About us</a>
+            </li>
+            <li class="nav-item">
+              <a href="" class="nav-link">Delivery</a>
+            </li>
+            <li class="nav-item">
+              <a href="" class="nav-link">Blog</a>
+            </li>
+          </ul>
+          <!-- ms-auto это маррджин. В уроке без него, у чувака и так работало -->
+          <form class="d-flex ms-auto" action="">
+            <input class="form-control me-2" type="search" placeholder="Search">
+            <button class="btn btn-outline-success">Search</button>
+          </form>
+          <div class="d-flex ms-auto my-2">
+            <button class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Sign in</button>
+            <button class="btn btn-outline-danger">Sign up</button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Модалка -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="exampleModalLabel">Modal header</h4>
+            <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+          </div>
+          <div class="modal-body">
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Login</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Конец модалки -->
+
+    <main>
+      <!-- Атрибут data-ride запускает автоматическую смену слайдов после загрузки страницы -->
+      <div class="carousel slide" id="carouselControls" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item">
+            <img class="d-block w-100" src="https://images.unsplash.com/photo-1454496522488-7a8e488e8606?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1355&q=80" alt="111">
+          </div>
+          <div class="carousel-item active">
+            <img class="d-block w-100" src="https://images.unsplash.com/photo-1434394354979-a235cd36269d?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1333&q=80" alt="">
+          </div>
+          <div class="carousel-item">
+            <img class="d-block w-100" src="https://images.unsplash.com/photo-1518021964703-4b2030f03085?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1353&q=80" alt="">
+          </div>
+        </div>
+        <a class="carousel-control-prev" role="button" href="#carouselControls" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </a>
+        <a class="carousel-control-next" role="button" href="#carouselControls" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </a>
+      </div>
+
+      <div class="container my-5">
+        <div class="row">
+          <div class="col-lg-4">
+            <img class="w-100" src="https://images.unsplash.com/photo-1518021964703-4b2030f03085?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1353&q=80" alt="">
+          </div>
+          <div class="col-lg-8 text-center">
+            <h1 class="my-3">Hello</h1>
+            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur, laborum facere. Enim sed amet quae culpa deleniti eveniet soluta ducimus officiis accusamus provident itaque reiciendis neque autem, et iste. Quidem enim, accusamus ad numquam perspiciatis sequi magni, libero atque nihil, aliquam optio magnam quo vitae reiciendis iure doloremque vel quae.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+  </body>
+</html>
