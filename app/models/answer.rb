@@ -8,6 +8,8 @@ class Answer < ApplicationRecord
 
   scope :by_best, -> { order(best?: :desc) }
 
+  accepts_nested_attributes_for :attachments
+  
   def best!
     transaction do
       return false if self.best?

@@ -1,6 +1,12 @@
 .[id="answer-#{answer.id}" class='answer-div']
   p[class="#{'best_answer' if answer.best?}"]
     = answer.body
+  - if answer.attachments.any? 
+    h4 Attachments:
+    ul
+      - answer.attachments.each do |attachment|
+        = attachment.file.filename
+
   = link_to 'Mark best', answers_mark_best_path(answer), method: 'PATCH', remote: true if current_user&.author_of?(@question)
   - if current_user&.author_of?(answer)
     = link_to 'Edit', '', class: 'edit-answer-link', data: { answer_id: answer.id }

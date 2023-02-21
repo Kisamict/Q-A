@@ -2,4 +2,11 @@
 = form_with model: [@question, @answer], local: false do |f|
   = f.label :body, 'Body'
   = f.text_area :body
+
+  div
+    = f.fields_for :attachments do |a|
+      = a.label :file
+      = a.file_field :file
+
+  br
   = f.submit 'Submit'
