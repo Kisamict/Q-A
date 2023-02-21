@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_14_041818) do
+ActiveRecord::Schema.define(version: 2023_02_21_133001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,8 +30,9 @@ ActiveRecord::Schema.define(version: 2023_01_14_041818) do
     t.string "file"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "question_id"
-    t.index ["question_id"], name: "index_attachments_on_question_id"
+    t.string "attachable_type"
+    t.bigint "attachable_id"
+    t.index ["attachable_type", "attachable_id"], name: "index_attachments_on_attachable"
   end
 
   create_table "questions", force: :cascade do |t|
@@ -57,6 +58,5 @@ ActiveRecord::Schema.define(version: 2023_01_14_041818) do
 
   add_foreign_key "answers", "questions"
   add_foreign_key "answers", "users"
-  add_foreign_key "attachments", "questions"
   add_foreign_key "questions", "users"
 end
