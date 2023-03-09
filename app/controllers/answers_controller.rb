@@ -46,7 +46,8 @@ class AnswersController < ApplicationController
       :body,
       :question_id,
       attachments_attributes: [
-        :file
+        :file,
+        :_destroy
       ]
     )
   end

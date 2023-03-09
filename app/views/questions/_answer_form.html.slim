@@ -5,8 +5,8 @@
 
   div
     = f.fields_for :attachments do |a|
-      = a.label :file
-      = a.file_field :file
+      = render 'shared/attachment_fields', f: a
+    = link_to_add_association 'add file', f, :attachments, partial: 'shared/attachment_fields'
 
   br
   = f.submit 'Submit'
