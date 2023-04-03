@@ -4,10 +4,11 @@
   - if current_user&.author_of?(@question)
     = link_to 'Edit', edit_question_path(@question)
     = link_to 'Delete', question_path(@question), method: 'DELETE'
-  p Attachments:
-  ul
-    - @question.attachments.each do |attachment|
-      li = attachment.file.filename
+
+  - if @question.attachments.any? 
+    .question-attachments
+      p Attachments:
+      = render 'shared/attachments', resource: @question 
 
 h3 Answers:
 .answers
