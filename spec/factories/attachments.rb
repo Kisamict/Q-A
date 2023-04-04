@@ -5,5 +5,9 @@ FactoryBot.define do
     trait :for_question do
       association :attachable, factory: :question
     end
+
+    trait :for_answer do
+      association :attachable, factory: :answer
+    end
   end
 end

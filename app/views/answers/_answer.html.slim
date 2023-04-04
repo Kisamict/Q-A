@@ -2,10 +2,9 @@
   p[class="#{'best_answer' if answer.best?}"]
     = answer.body
   - if answer.attachments.any? 
-    h4 Attachments:
-    ul
-      - answer.attachments.each do |attachment|
-        li = attachment.file.filename
+    .[id="answer-#{answer.id}-attachments"]
+      h4 Attachments:
+      = render 'shared/attachments', resource: answer
 
   = link_to 'Mark best', answers_mark_best_path(answer), method: 'PATCH', remote: true if current_user&.author_of?(@question)
   - if current_user&.author_of?(answer)
@@ -13,7 +12,6 @@
     = link_to 'Delete', question_answer_path(@question, answer), method: 'DELETE',
                                                                  class: 'delete-answer-link',
                                                                  remote: true
-
 
     = form_with model: [@question, answer], local: false, class: 'edit_answer', id: "answer-form-#{answer.id}" do |f|
       = f.text_area :body
