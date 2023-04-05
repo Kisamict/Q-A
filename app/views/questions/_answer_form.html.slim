@@ -2,4 +2,11 @@
 = form_with model: [@question, @answer], local: false do |f|
   = f.label :body, 'Body'
   = f.text_area :body
+
+  div
+    = f.fields_for :attachments do |a|
+      = render 'shared/attachment_fields', f: a
+    = link_to_add_association 'add file', f, :attachments, partial: 'shared/attachment_fields'
+
+  br
   = f.submit 'Submit'

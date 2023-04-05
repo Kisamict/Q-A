@@ -39,6 +39,10 @@ RSpec.describe QuestionsController, type: :controller do
     it 'assigns new question\'s answer to a variable' do
       expect(assigns(:answer)).to be_a_new Answer
     end
+
+    it 'builds a new attachemnt' do
+      expect(assigns(:answer).attachments.first).to be_a_new(Attachment)
+    end
   end
 
   describe 'GET #new' do
@@ -50,6 +54,10 @@ RSpec.describe QuestionsController, type: :controller do
 
       it 'assigns new question to a variable' do
         expect(assigns(:question)).to be_a_new(Question)
+      end
+
+      it 'builds new question attachment' do
+        expect(assigns(:question).attachments.first).to be_a_new(Attachment)
       end
 
       it 'renders new view' do
