@@ -1,8 +1,12 @@
 Rails.application.routes.draw do
   devise_for :users
   root to: 'questions#index'
+  
+  concern :votable do
+    post :vote_up, on: :member
+  end
 
-  resources :questions do
+  resources :questions, concerns: :votable do
     resources :answers, except: [:edit]
   end
   

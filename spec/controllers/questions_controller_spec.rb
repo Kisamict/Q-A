@@ -232,4 +232,28 @@ RSpec.describe QuestionsController, type: :controller do
       end
     end
   end
+
+  describe 'POST #vote_up' do
+    context 'authenticated user' do
+      before { sign_in user }
+
+      it 'creates new vote_up with value == 1 ' do
+        expect { post :vote_up, params: { id: question } }.to change(question.votes, :count).by 1
+
+        expect(question.votes.last.value).to eq 1 
+      end
+    end
+
+    context 'unaunthenticated user' do
+      it 'does not create new vote' do
+        expect { post :vote_up, params: { id: question } }.to_not change(question.votes, :count)
+      end
+
+      it 'redirects to sign in page' do
+        post :vote_up, params: { id: question }
+        
+        expect(response).to redirect_to new_user_session_path
+      end
+    end
+  end
 end

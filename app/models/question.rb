@@ -1,4 +1,6 @@
 class Question < ApplicationRecord
+  include Votable
+
   has_many :answers, dependent: :destroy
   has_many :attachments, as: :attachable
   has_many :votes, as: :votable, dependent: :destroy

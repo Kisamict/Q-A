@@ -1,6 +1,8 @@
 class QuestionsController < ApplicationController
-  before_action :authenticate_user!, only: %i[new create update destroy]
-  before_action :set_question, only: %i[show edit update destroy]
+  include ControllerVotable
+
+  before_action :authenticate_user!, only: %i[new create update destroy vote_up]
+  before_action :set_question, only: %i[show edit update destroy vote_up]
 
   def index
     @questions = Question.all
