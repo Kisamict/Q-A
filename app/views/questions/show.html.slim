@@ -1,7 +1,8 @@
 .question
   h1 = @question.title
   p[id="question-#{@question.id}-rating"]= "Rating: #{@question.rating}" 
-  p = link_to 'Vote up', vote_up_question_path(@question, format: :json), remote: true,
+  - if current_user
+    p = link_to 'Vote up', vote_up_question_path(@question, format: :json), remote: true,
                                                                           method: 'POST',
                                                                           class: 'vote_up',
                                                                           data: { klass: 'question' }

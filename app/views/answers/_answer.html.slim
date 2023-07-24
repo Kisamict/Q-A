@@ -1,7 +1,8 @@
 .[id="answer-#{answer.id}" class='answer-div' style='border-style: groove;']
 
   p[id="answer-#{answer.id}-rating"]="Rating: #{answer.rating}"
-  = link_to 'Vote up', vote_up_answer_path(answer, format: :json), method: 'POST',
+  - if current_user
+    = link_to 'Vote up', vote_up_answer_path(answer, format: :json), method: 'POST',
                                                                    remote: true,
                                                                    class: 'vote_up',
                                                                    data: { klass: 'answer' } 

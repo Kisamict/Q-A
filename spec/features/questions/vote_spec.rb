@@ -24,7 +24,7 @@ feature 'Vote up for question', %q{
 
   scenario 'authenticated user can vote for question', js: true do
     within '.question' do
-      click_on 'Vote up'
+      click_link 'Vote up'
 
       within "#question-#{question.id}-rating" do
         expect(page).to have_text 'Rating: 4'
@@ -33,7 +33,12 @@ feature 'Vote up for question', %q{
   end
 
   scenario 'unauthenticated user cannot vote for question' do
-    pending
+    sign_out user
+    visit question_path(question)
+
+    within '.question' do
+      expect(page).to_not have_link 'Vote up'
+    end
   end
 
   scenario 'author of question cannot vote for his question' do

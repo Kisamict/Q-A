@@ -15,10 +15,19 @@ feature 'Vote for answer', %q{
     visit question_path(question)
   end
 
-  scenario 'authenticated user votes for question', js: true do 
+  scenario 'authenticated user votes for answer', js: true do 
     within "#answer-#{answer.id}" do
       click_link 'Vote up'
       expect(page).to have_text 'Rating: 1'
+    end
+  end
+
+  scenario 'unauthenticated user cannot vote for answer' do
+    sign_out user
+    visit question_path(question)
+
+    within '.answers' do
+      expect(page).to_not have_link 'Vote up'
     end
   end
 end
