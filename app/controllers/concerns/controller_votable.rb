@@ -9,7 +9,7 @@ module ControllerVotable
     @votable.vote_up(current_user)
 
     respond_to do |format|
-      format.json { render json: @votable.to_json }
+      format.json { render json: @votable }
     end
   end
 
@@ -19,5 +19,3 @@ module ControllerVotable
     @votable = controller_name.classify.constantize.find(params[:id])
   end
 end
-
- 

@@ -1,4 +1,10 @@
-.[id="answer-#{answer.id}" class='answer-div']
+.[id="answer-#{answer.id}" class='answer-div' style='border-style: groove;']
+
+  p[id="answer-#{answer.id}-rating"]="Rating: #{answer.rating}"
+  = link_to 'Vote up', vote_up_answer_path(answer, format: :json), method: 'POST',
+                                                                   remote: true,
+                                                                   class: 'vote_up',
+                                                                   data: { klass: 'answer' } 
   p[class="#{'best_answer' if answer.best?}"]
     = answer.body
   - if answer.attachments.any? 
@@ -9,10 +15,10 @@
   = link_to 'Mark best', answers_mark_best_path(answer), method: 'PATCH', remote: true if current_user&.author_of?(@question)
   - if current_user&.author_of?(answer)
     = link_to 'Edit', '', class: 'edit-answer-link', data: { answer_id: answer.id }
-    = link_to 'Delete', question_answer_path(@question, answer), method: 'DELETE',
-                                                                 class: 'delete-answer-link',
-                                                                 remote: true
+    = link_to 'Delete', answer_path(answer), method: 'DELETE',
+                                             class: 'delete-answer-link',
+                                             remote: true
 
-    = form_with model: [@question, answer], local: false, class: 'edit_answer', id: "answer-form-#{answer.id}" do |f|
+    = form_with model: answer, local: false, class: 'edit_answer', id: "answer-form-#{answer.id}" do |f|
       = f.text_area :body
       = f.submit 'Update'

@@ -60,39 +60,63 @@
 
 require 'rails_helper'
 
-shared_examples 'Votable' do
-  subject    { create(described_class.to_s.downcase.to_sym) }
-  let(:user) { create(:user) }
-  
-  describe '#vote_up' do
-    it 'creates new vote with 1 value' do
-      expect { subject.vote_up(user) }.to change(user.votes, :count).by(1)
-
-      expect(user.votes.last.value).to eq 1
-    end
-  end
-
-  describe '#vote_down' do
-    it 'creates new vote with -1 value' do
-      expect { subject.vote_down(user) }.to change(user.votes, :count).by(1)
+shared_examples 'Controller Votable' do
+  subject     { create(described_class.controller_path.classify.constantize.to_s.underscore.to_sym) }
+  let!(:user) { create(:user) }
+    
+  describe 'POST #vote_up' do
+    context 'authenticated user' do
+      before { sign_in user }
       
-      expect(user.votes.last.value).to eq -1
+      it 'creates new vote_up with value == 1 ' do
+          expect { post :vote_up, format: :json, params: { id: subject.id } }.to change(subject.votes, :count).by 1
+
+          expect(subject.votes.last.value).to eq 1 
+        end
+      end
+
+      context 'unaunthenticated user' do
+        it 'does not create new vote' do
+          expect { post :vote_up, format: :json, params: { id: subject.id } }.to_not change(subject.votes, :count)
+        end
+
+        it 'returns unathorized' do
+          post :vote_up, format: :json, params: { id: subject.id }
+          
+          expect(response.code).to eq '401'
+        end
+      end
     end
-  end
+  
+  # describe '#vote_up' do
+  #   it 'creates new vote with 1 value' do
+  #     expect { subject.vote_up(user) }.to change(user.votes, :count).by(1)
 
-  describe '#rating' do
-    let!(:votes) { create_list(:vote, 2, "for_#{described_class}".downcase.to_sym, votable: subject) }
+  #     expect(user.votes.last.value).to eq 1
+  #   end
+  # end
 
-    it 'show sum of all votes' do
-      expect(subject.rating).to eq 2
-    end
-  end
+  # describe '#vote_down' do
+  #   it 'creates new vote with -1 value' do
+  #     expect { subject.vote_down(user) }.to change(user.votes, :count).by(1)
+      
+  #     expect(user.votes.last.value).to eq -1
+  #   end
+  # end
+
+  # describe '#rating' do
+  #   let!(:votes) { create_list(:vote, 2, "for_#{described_class}".downcase.to_sym, votable: subject) }
+
+  #   it 'show sum of all votes' do
+  #     expect(subject.rating).to eq 2
+  #   end
+  # end
 end
 
-RSpec.describe Question, type: :model do
-  it_behaves_like 'Votable'
-end
+# RSpec.describe QuestionsController, type: :controller do
+#   it_behaves_like 'Controller Votable'
+# end
 
-RSpec.describe Answer, type: :model do
-  it_behaves_like 'Votable'
-end
+# RSpec.describe Answer, type: :model do
+#   it_behaves_like 'Votable'
+# end

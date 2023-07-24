@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   end
 
   resources :questions, concerns: :votable do
-    resources :answers, except: [:edit]
+    resources :answers, except: [:edit], concerns: :votable, shallow: true
   end
   
   resources :attachments, only: :destroy

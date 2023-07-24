@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'controllers/concerns/controller_votable_spec'
 
 RSpec.describe QuestionsController, type: :controller do
   let!(:user)           { create(:user) }
@@ -8,6 +9,8 @@ RSpec.describe QuestionsController, type: :controller do
   let!(:asnwers)        { create_list(:answer, 3, question: question) }
   let!(:valid_params)   { { question: attributes_for(:question) } }
   let!(:invalid_params) { { question: attributes_for(:invalid_question) } }
+
+  it_behaves_like 'Controller Votable'
 
   describe 'GET #index' do
     before { get :index }
@@ -227,30 +230,6 @@ RSpec.describe QuestionsController, type: :controller do
 
       it 'redirects to sign in page' do
         delete :destroy, params: { id: question }
-        
-        expect(response).to redirect_to new_user_session_path
-      end
-    end
-  end
-
-  describe 'POST #vote_up' do
-    context 'authenticated user' do
-      before { sign_in user }
-
-      it 'creates new vote_up with value == 1 ' do
-        expect { post :vote_up, params: { id: question } }.to change(question.votes, :count).by 1
-
-        expect(question.votes.last.value).to eq 1 
-      end
-    end
-
-    context 'unaunthenticated user' do
-      it 'does not create new vote' do
-        expect { post :vote_up, params: { id: question } }.to_not change(question.votes, :count)
-      end
-
-      it 'redirects to sign in page' do
-        post :vote_up, params: { id: question }
         
         expect(response).to redirect_to new_user_session_path
       end

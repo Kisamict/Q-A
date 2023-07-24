@@ -1,11 +1,14 @@
 require 'rails_helper'
+require 'controllers/concerns/controller_votable_spec'
 
 RSpec.describe AnswersController, type: :controller do
   let!(:user)     { create(:user) }
   let!(:user2)    { create(:user) }
   let!(:question) { create(:question) }
   let!(:answer)   { create(:answer, question: question, user: user) }
-  
+
+  it_behaves_like 'Controller Votable'
+
   describe 'POST #create' do
     let!(:valid_params) { { answer: attributes_for(:answer, question_id: question.id), question_id: question.id } }
 

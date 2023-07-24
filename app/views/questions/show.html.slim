@@ -1,7 +1,10 @@
 .question
-  p = link_to 'Vote up', vote_up_question_path(@question, format: :json), method: 'POST'
   h1 = @question.title
-  p.question-rating = "Rating: #{@question.rating}" 
+  p[id="question-#{@question.id}-rating"]= "Rating: #{@question.rating}" 
+  p = link_to 'Vote up', vote_up_question_path(@question, format: :json), remote: true,
+                                                                          method: 'POST',
+                                                                          class: 'vote_up',
+                                                                          data: { klass: 'question' }
   p = @question.body
   - if current_user&.author_of?(@question)
     = link_to 'Edit', edit_question_path(@question)

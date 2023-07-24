@@ -10,12 +10,14 @@ feature 'Vote up for question', %q{
   let!(:votes)    { create_list(:vote, 3, :for_question, votable: question) }
 
   before do
+    question.update!(rating: 3)
+    
     sign_in user
     visit question_path(question)
   end
 
   scenario 'any user can see question\s rating' do
-    within '.question-rating' do
+    within "#question-#{question.id}-rating" do
       expect(page).to have_text 'Rating: 3'
     end
   end
@@ -24,7 +26,7 @@ feature 'Vote up for question', %q{
     within '.question' do
       click_on 'Vote up'
 
-      within '.question-rating' do
+      within "#question-#{question.id}-rating" do
         expect(page).to have_text 'Rating: 4'
       end
     end

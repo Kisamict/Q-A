@@ -1,6 +1,8 @@
 class AnswersController < ApplicationController
-  before_action :authenticate_user!, only: %i[create destroy]
-  before_action :set_question, only: %i[create destroy update]
+  include ControllerVotable
+
+  before_action :authenticate_user!, only: %i[create destroy vote_up]
+  before_action :set_question, only: %i[create update]
   before_action :set_answer, only: %i[edit update mark_best]
 
   def create 

@@ -5,7 +5,7 @@
     "@nathanvda/cocoon": "^1.2.14",
     "@rails/actioncable": "^6.0.0",
     "@rails/activestorage": "^6.0.0",
-    "@rails/ujs": "^7.0.5",
+    "@rails/ujs": "^7.0.6",
     "@rails/webpacker": "5.4.0",
     "jquery": "^3.7.0",
     "jquery-ujs": "^1.2.3",
@@ -15,6 +15,6 @@
   },
   "version": "0.1.0",
   "devDependencies": {
-    "webpack-dev-server": "^4.15.0"
+    "webpack-dev-server": "^4.15.1"
   }
 }
