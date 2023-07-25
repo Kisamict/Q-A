@@ -5,15 +5,25 @@ feature 'Vote up for question', %q{
   As authenticated user
   I want to be able to vote up for question
 } do
-  let!(:user)     { create(:user) }
-  let!(:question) { create(:question) }
-  let!(:votes)    { create_list(:vote, 3, :for_question, votable: question) }
+  let!(:user)          { create(:user) }
+  let!(:question)      { create(:question) }
+  let!(:user_question) { create(:question, user: user) }
+  let!(:votes)         { create_list(:vote, 3, :for_question, votable: question) }
 
   before do
     question.update!(rating: 3)
     
     sign_in user
     visit question_path(question)
+  end
+
+  scenario 'unauthenticated user cannot vote for question' do
+    sign_out user
+    visit question_path(question)
+
+    within '.question' do
+      expect(page).to_not have_link 'Vote up'
+    end
   end
 
   scenario 'any user can see question\s rating' do
@@ -31,18 +41,13 @@ feature 'Vote up for question', %q{
       end
     end
   end
-
-  scenario 'unauthenticated user cannot vote for question' do
-    sign_out user
-    visit question_path(question)
+  
+  scenario 'author of question cannot vote for own question' do
+    visit question_path(user_question)
 
     within '.question' do
       expect(page).to_not have_link 'Vote up'
     end
-  end
-
-  scenario 'author of question cannot vote for his question' do
-    pending
   end
 
   scenario 'user cannot vote for same question twice' do

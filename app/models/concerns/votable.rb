@@ -7,7 +7,6 @@ module Votable
 
   def vote_up(user)
     votes.create!(user: user, value: 1)
-
     update_rating
   end
 
@@ -17,7 +16,7 @@ module Votable
     update_rating
   end
 
-  private 
+  private
 
   def update_rating
     update!(rating: self.count_rating)

@@ -2,10 +2,11 @@
 
   p[id="answer-#{answer.id}-rating"]="Rating: #{answer.rating}"
   - if current_user
-    = link_to 'Vote up', vote_up_answer_path(answer, format: :json), method: 'POST',
-                                                                   remote: true,
-                                                                   class: 'vote_up',
-                                                                   data: { klass: 'answer' } 
+    - unless current_user.author_of?(answer)
+      = link_to 'Vote up', vote_up_answer_path(answer, format: :json), method: 'POST',
+                                                                    remote: true,
+                                                                    class: 'vote_up',
+                                                                    data: { klass: 'answer' } 
   p[class="#{'best_answer' if answer.best?}"]
     = answer.body
   - if answer.attachments.any? 
