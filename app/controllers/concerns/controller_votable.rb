@@ -2,14 +2,22 @@ module ControllerVotable
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_votable, only: :vote_up
+    before_action :set_votable, only: [:vote_up, :vote_down]
   end
 
   def vote_up
-    @votable.vote_up(current_user)
+    respond_to do |format| 
+      format.json do 
+        render json: @votable if @votable.vote_up(current_user)
+      end
+    end
+  end
 
-    respond_to do |format|
-      format.json { render json: @votable }
+  def vote_down
+    respond_to do |format| 
+      format.json do 
+        render json: @votable if @votable.vote_down(current_user)
+      end
     end
   end
 

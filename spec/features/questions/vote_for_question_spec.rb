@@ -10,51 +10,69 @@ feature 'Vote up for question', %q{
   let!(:user_question) { create(:question, user: user) }
   let!(:votes)         { create_list(:vote, 3, :for_question, votable: question) }
 
-  before do
-    question.update!(rating: 3)
+  before { question.update!(rating: 3) }
+
+  context 'Unauthenticated user' do
+    before { visit question_path(question) }
+
+    scenario 'cannot vote for question' do
+      within '.question' do
+        expect(page).to_not have_link 'Vote up'
+        expect(page).to_not have_link 'Vote down'
+      end
+    end
     
-    sign_in user
-    visit question_path(question)
-  end
-
-  scenario 'unauthenticated user cannot vote for question' do
-    sign_out user
-    visit question_path(question)
-
-    within '.question' do
-      expect(page).to_not have_link 'Vote up'
-    end
-  end
-
-  scenario 'any user can see question\s rating' do
-    within "#question-#{question.id}-rating" do
-      expect(page).to have_text 'Rating: 3'
-    end
-  end
-
-  scenario 'authenticated user can vote for question', js: true do
-    within '.question' do
-      click_link 'Vote up'
-
+    scenario 'can see question\s rating' do
       within "#question-#{question.id}-rating" do
-        expect(page).to have_text 'Rating: 4'
+        expect(page).to have_text 'Rating: 3'
       end
     end
   end
-  
-  scenario 'author of question cannot vote for own question' do
-    visit question_path(user_question)
 
-    within '.question' do
-      expect(page).to_not have_link 'Vote up'
+  context 'Authenticated user' do
+    before { sign_in user }
+    
+    scenario 'can vote up for question', js: true do
+      visit question_path(question)
+
+      within '.question' do
+        click_link 'Vote up'
+        
+        within "#question-#{question.id}-rating" do
+          expect(page).to have_text 'Rating: 4'
+        end
+      end
+    end
+
+    scenario 'can vote down for question', js: true do
+      visit question_path(question)
+      
+      within '.question' do
+        click_link 'Vote down'
+        
+        within "#question-#{question.id}-rating" do
+          expect(page).to have_text 'Rating: 2'
+        end
+      end
     end
   end
 
-  scenario 'user cannot vote for same question twice' do
-    pending
+  context 'Author of question' do
+    scenario 'cannot vote for own question' do
+      visit question_path(user_question)
+  
+      within '.question' do
+        expect(page).to_not have_link 'Vote up'
+      end
+    end
   end
 
-  scenario 'user can rewote' do
-    pending
-  end
+
+  # scenario 'user cannot vote for same question twice' do
+  #   pending
+  # end
+
+  # scenario 'user can rewote' do
+  #   pending
+  # end
 end

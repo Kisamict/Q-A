@@ -22,6 +22,18 @@ feature 'Vote for answer', %q{
         expect(page).to have_text 'Rating: 1'
       end
     end
+
+    scenario 'can vote down for answer', js: true do
+      visit question_path(question)
+      
+      within "#answer-#{answer.id}" do
+        click_link 'Vote down'
+        
+        within "#answer-#{answer.id}-rating" do
+          expect(page).to have_text 'Rating: -1'
+        end
+      end
+    end
   end
 
   context 'unauthenticated user' do

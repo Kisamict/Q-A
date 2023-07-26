@@ -7,6 +7,11 @@
                                                                     remote: true,
                                                                     class: 'vote_up',
                                                                     data: { klass: 'answer' } 
+
+      p = link_to 'Vote down', vote_down_answer_path(answer, format: :json), remote: true,
+                                                                             method: 'POST',
+                                                                             class: 'vote_down',
+                                                                             data: { klass: 'answer' }
   p[class="#{'best_answer' if answer.best?}"]
     = answer.body
   - if answer.attachments.any? 

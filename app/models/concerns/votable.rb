@@ -12,7 +12,6 @@ module Votable
 
   def vote_down(user)
     votes.create!(user: user, value: -1)
-
     update_rating
   end
 

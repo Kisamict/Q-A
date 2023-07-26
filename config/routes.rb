@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   
   concern :votable do
     post :vote_up, on: :member
+    post :vote_down, on: :member
   end
 
   resources :questions, concerns: :votable do

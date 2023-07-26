@@ -4,10 +4,14 @@
   - if current_user
     - unless current_user.author_of?(@question)
       p = link_to 'Vote up', vote_up_question_path(@question, format: :json), remote: true,
-                                                                            method: 'POST',
-                                                                            class: 'vote_up',
-                                                                          data: { klass: 'question' }
-  p = @question.body
+                                                                              method: 'POST',
+                                                                              class: 'vote_up',
+                                                                              data: { klass: 'question' }
+
+      p = link_to 'Vote down', vote_down_question_path(@question, format: :json), remote: true,
+                                                                                method: 'POST',
+                                                                                class: 'vote_down',
+                                                                                data: { klass: 'question' }
   - if current_user&.author_of?(@question)
     = link_to 'Edit', edit_question_path(@question)
     = link_to 'Delete', question_path(@question), method: 'DELETE'

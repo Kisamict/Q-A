@@ -21,7 +21,7 @@ document.addEventListener("turbolinks:load", function () {
     $('#answer-form-' + this.dataset.answerId).show();
   })
 
-  $('.vote_up').on('ajax:success', function(e) {
+  $('.vote_down, .vote_up').on('ajax:success', function(e) {
     var response = e.detail[0];
     var votableKlass = this.dataset.klass
     var votableId = response.id
