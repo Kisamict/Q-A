@@ -1,7 +1,9 @@
+require 'rails_helper'
+
 feature 'View each question', %q{
   In order to read question details 
   As user
-  I want to be able to view individual question and it's answers
+  I want to be able to view individual question and its answers
 } do
   let!(:answers)   { create_list(:answer, 5) }
   let!(:questions) { Question.all }

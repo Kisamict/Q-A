@@ -32,7 +32,7 @@ group :development do
 end
 
 group :test do
-  gem 'capybara-webkit'
+  gem 'capybara-webkit', github: 'thoughtbot/capybara-webkit', branch: 'master'
   gem 'database_cleaner-active_record'
   gem 'capybara', '>= 3.26'
   gem 'selenium-webdriver'

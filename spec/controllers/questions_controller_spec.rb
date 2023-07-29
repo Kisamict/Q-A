@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'controllers/concerns/controller_votable_spec'
 
 RSpec.describe QuestionsController, type: :controller do
   let!(:user)           { create(:user) }
@@ -8,6 +9,8 @@ RSpec.describe QuestionsController, type: :controller do
   let!(:asnwers)        { create_list(:answer, 3, question: question) }
   let!(:valid_params)   { { question: attributes_for(:question) } }
   let!(:invalid_params) { { question: attributes_for(:invalid_question) } }
+
+  it_behaves_like 'Controller Votable'
 
   describe 'GET #index' do
     before { get :index }
