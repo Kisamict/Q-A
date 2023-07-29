@@ -71,4 +71,21 @@ shared_examples 'Controller Votable' do
       end
     end
   end
+
+  describe 'DELETE #revote' do
+    context 'authenticated user' do 
+      before do
+        sign_in user
+        subject.vote_up(user)
+      end
+
+      it 'deletes users vote for votable' do
+        expect { delete :revote, format: :json, params: { id: subject.id } }.to change(subject.votes, :count).by(-1)
+      end
+
+      it 'recounts rating' do
+        expect { delete :revote, format: :json, params: { id: subject.id } }.to change{ subject.reload.rating }.by(-1)
+      end
+    end
+  end
 end

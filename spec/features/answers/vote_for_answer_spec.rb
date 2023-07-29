@@ -34,6 +34,29 @@ feature 'Vote for answer', %q{
         end
       end
     end
+
+    scenario 'can revote', js: true do
+      within "#answer-#{answer.id}"  do
+        click_link 'Vote down'
+        
+        within "#answer-#{answer.id}-rating" do
+          expect(page).to have_text 'Rating: -1'
+        end
+
+        expect(page).to_not have_link 'Vote down'
+
+        click_link 'Revote'
+        expect(page).to have_text 'Rating: 0'
+
+        click_link 'Vote up'
+        
+        within "#answer-#{answer.id}-rating" do
+          expect(page).to have_text 'Rating: 1'
+        end
+
+        expect(page).to_not have_link 'Vote up'
+      end
+    end
   end
 
   context 'unauthenticated user' do

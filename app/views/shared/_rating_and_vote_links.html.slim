@@ -1,0 +1,22 @@
+p[id="#{klass}-#{votable.id}-rating"]= "Rating: #{votable.rating}" 
+
+- if current_user
+    - unless current_user.author_of?(votable) || votable.already_voted?(current_user)
+        p = link_to 'Vote up', { controller: controller, id: votable, action: 'vote_up', format: :json },
+                                                                                remote: true,
+                                                                                method: 'POST',
+                                                                                class: 'vote_up',
+                                                                                data: { klass: klass, voting: 'up', id: votable.id }
+
+        p = link_to 'Vote down', { controller: controller, id: votable, action: 'vote_down', format: :json },
+                                                                                    remote: true,
+                                                                                    method: 'POST',
+                                                                                    class: 'vote_down',
+                                                                                    data: { klass: klass, voting: 'down', id: votable.id }
+
+    p = link_to 'Revote', { controller: controller, id: votable, action: 'revote', format: :json },
+                                                                            remote: true,
+                                                                            method: 'DELETE',
+                                                                            class: 'revote',
+                                                                        hidden: votable.already_voted?(current_user) ? false : true,
+                                                                        data: { klass: klass, id: votable.id }

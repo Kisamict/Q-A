@@ -7,6 +7,10 @@ RSpec.describe Vote, type: :model do
   end
 
   describe 'validations' do
+    subject { create(:vote, :for_question) }
+
+    it { should validate_uniqueness_of :user_id }
+
     context '.cannot_vote_for_own_votable'
     let!(:user)     { create(:user) }
     let!(:votables) { [create(:answer, user: user), create(:question, user: user)] }
