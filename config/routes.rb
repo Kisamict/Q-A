@@ -15,4 +15,6 @@ Rails.application.routes.draw do
   resources :attachments, only: :destroy
 
   patch 'mark_best_answer/:id', to: 'answers#mark_best', as: 'answers_mark_best'
+
+  mount ActionCable.server => '/cable'
 end

@@ -1,8 +1,9 @@
-= link_to 'Sign out', destroy_user_session_path, method: :delete if current_user
-= link_to 'Ask question', new_question_path
-- @questions.each do |question|
-  .div
-    = link_to question.title, question_path(question)
+- if current_user
+  = link_to 'Sign out', destroy_user_session_path, method: :delete 
+- else
+  = link_to 'Sign in', new_user_session_path
 
-#mydiv[style='display: none']
-  p Test
+br
+= link_to 'Ask question', new_question_path
+.questions
+  = render @questions
