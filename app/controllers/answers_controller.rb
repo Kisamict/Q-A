@@ -5,6 +5,8 @@ class AnswersController < ApplicationController
   before_action :set_question, only: %i[create update]
   before_action :set_answer, only: %i[edit update mark_best]
 
+  after_action :broadcast_answr, only: :create
+
   def create 
     @answer = @question.answers.new(answer_params)
     @answer.user = current_user
@@ -41,6 +43,12 @@ class AnswersController < ApplicationController
 
   def set_answer
     @answer = Answer.find(params[:id])
+  end
+
+  def broadcast_answr
+    return if @answer.errors.any?
+    
+    ActionCable.server.broadcast "question_#{@question.id}", @answer.to_json
   end
 
   def answer_params
