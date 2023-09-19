@@ -8,8 +8,12 @@ Rails.application.routes.draw do
     delete :revote, on: :member
   end
 
-  resources :questions, concerns: :votable do
-    resources :answers, except: [:edit], concerns: :votable, shallow: true
+  concern :commentable do
+    resources :comments, shallow: true
+  end
+
+  resources :questions, concerns: [:votable, :commentable] do
+    resources :answers, except: [:edit], concerns: [:votable, :commentable], shallow: true
   end
   
   resources :attachments, only: :destroy

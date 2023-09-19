@@ -15,6 +15,12 @@
                                              class: 'delete-answer-link',
                                              remote: true
 
-    = form_with model: answer, local: false, class: 'edit_answer', id: "answer-form-#{answer.id}" do |f|
-      = f.text_area :body
-      = f.submit 'Update'
+  .comments
+    - if answer.comments.any? 
+      = render partial: 'shared/comments', collection: answer.comments, as: :comment
+      
+  = render partial: 'shared/comment_form', locals: { resource: answer }
+
+  = form_with model: answer, local: false, class: 'edit_answer', id: "answer-form-#{answer.id}" do |f|
+    = f.text_area :body
+    = f.submit 'Update'

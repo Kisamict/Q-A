@@ -1,0 +1,5 @@
+= form_with model: [resource, Comment.new], local: false do |f|
+    = f.hidden_field :commentable_type, value: resource.class
+    = f.hidden_field :commentable_id, value: resource.id
+    = f.text_area :body
+    = f.submit 'comment'

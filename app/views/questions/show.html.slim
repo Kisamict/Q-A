@@ -1,4 +1,4 @@
-.question
+.question[id="question-#{@question.id}"]
   h1 = @question.title
   p = @question.body
   = render 'shared/rating_and_vote_links', votable: @question, klass: 'question', controller: 'questions'
@@ -11,6 +11,11 @@
     .question-attachments
       p Attachments:
       = render 'shared/attachments', resource: @question
+  .comments
+    - if @question.comments.any? 
+      = render partial: 'shared/comments', collection: @question.comments, as: :comment
+
+  = render partial: 'shared/comment_form', locals: { resource: @question }
 
 h3 Answers:
 .answers
