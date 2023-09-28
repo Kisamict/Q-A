@@ -2,10 +2,10 @@ class CommentsController < ApplicationController
   before_action :set_commentable, only: :create
   after_action :stream_comment, only: :create
 
+  respond_to :js
+
   def create
-    @comment = @commentable.comments.new(comment_params)
-    @comment.user_id = current_user.id
-    @comment.save
+    respond_with(@comment = @commentable.comments.create(comment_params.merge(user: current_user)))
   end
 
   private
