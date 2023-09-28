@@ -15,6 +15,7 @@ gem "slim-rails"
 gem 'devise'
 gem 'carrierwave'
 gem 'cocoon'
+gem 'gon'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

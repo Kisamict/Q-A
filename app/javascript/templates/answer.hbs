@@ -1,0 +1,14 @@
+<div class="answer-div" id="answer-{{answer.id}}" style="border-style: groove;">
+    <p id="answer-{{answer.id}}-rating">Rating: {{answer.rating}}</p>
+
+    {{#if current_user}}
+        <p><a class="revote" hidden="hidden" data-klass="answer" data-id="{{answer.id}}" data-remote="true" rel="nofollow"
+                data-method="DELETE" href="/answers/{{answer.id}}/revote.json">Revote</a></p>
+        <p><a class="vote_up" data-klass="answer" data-voting="up" data-id="{{answer.id}}"data-remote="true"
+                rel="nofollow" data-method="POST" href="/answers/{{answer.id}}/vote_up.json">Vote up</a></p>
+        <p><a class="vote_down" data-klass="answer" data-voting="down" data-id="{{answer.id}}" data-remote="true"
+                rel="nofollow" data-method="POST" href="/answers/{{answer.id}}/vote_down.json">Vote down</a></p>
+    {{/if}}
+
+    <p>{{answer.body}}</p>
+</div>

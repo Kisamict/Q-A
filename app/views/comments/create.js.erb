@@ -1,0 +1,9 @@
+<%- unless @comment.errors.any? %>
+  var commentableType = ('<%= @comment.commentable_type.downcase %>') 
+  var commentableId = (<%= @commentable.id %>)
+  var commentsPath = ('div#' + commentableType + '-' + commentableId + ' .comments') 
+
+  var newComment = ('<%= j render(partial: @comment) %>')
+
+  $(commentsPath).append(newComment)
+<% end %>

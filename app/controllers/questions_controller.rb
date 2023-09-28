@@ -4,6 +4,8 @@ class QuestionsController < ApplicationController
   before_action :authenticate_user!, only: %i[new create update destroy vote_up]
   before_action :set_question, only: %i[show edit update destroy vote_up]
 
+  after_action :broadcast_question, only: %i[create]
+
   def index
     @questions = Question.all
   end
@@ -12,6 +14,9 @@ class QuestionsController < ApplicationController
     @answers = @question.answers
     @answer = Answer.new
     @answer.attachments.build
+
+    gon.question_id = @question.id
+    gon.current_user = current_user
   end
 
   def new
@@ -67,5 +72,11 @@ class QuestionsController < ApplicationController
 
   def set_question
     @question = Question.find(params[:id])
+  end
+
+  def broadcast_question
+    return if @question.errors.any?
+
+    ActionCable.server.broadcast('questions', @question.to_json)
   end
 end
