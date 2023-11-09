@@ -17,6 +17,9 @@ gem 'carrierwave'
 gem 'cocoon'
 gem 'gon'
 gem 'responders'
+gem 'omniauth-facebook'
+gem 'omniauth-twitter'
+gem 'omniauth-rails_csrf_protection'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
