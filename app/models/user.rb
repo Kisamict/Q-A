@@ -1,18 +1,41 @@
 class User < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable,
          :registerable,
          :recoverable,
          :rememberable,
-         :validatable
+         :validatable,
+         :confirmable,
+         :omniauthable, omniauth_providers: %i[twitter]
 
   has_many :questions, dependent: :destroy
   has_many :answers, dependent: :destroy
   has_many :votes, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :authorizations, dependent: :destroy
 
   def author_of?(resource)
     id == resource.user_id
+  end
+
+  def self.find_for_auth(auth)
+    provider = auth['provider']
+    uid = auth['uid']
+    email = auth['info']['email']
+
+    authorization = Authorization.find_by(uid: uid, provider: provider)
+    return authorization.user if authorization
+
+    if email
+      user = User.find_or_create_by(email: email) do |user|
+        user.email = email
+        user.password = SecureRandom.hex(8)
+      end
+
+      user.send_confirmation_instructions unless user.confirmed? 
+
+      user.authorizations.create(uid: uid, provider: provider)
+      
+      user
+    end
   end
 end
