@@ -20,6 +20,7 @@ gem 'responders'
 gem 'omniauth-facebook'
 gem 'omniauth-twitter'
 gem 'omniauth-rails_csrf_protection'
+gem 'pundit'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
