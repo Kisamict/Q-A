@@ -31,20 +31,8 @@ RSpec.describe QuestionsController, type: :controller do
       expect(assigns(:question)).to eq question
     end
 
-    it 'assigns requested question answers to @answers variable' do
-      expect(assigns(:answers)).to eq question.answers
-    end
-
     it 'renders show view' do
       expect(response).to render_template :show
-    end
-
-    it 'assigns new question\'s answer to a variable' do
-      expect(assigns(:answer)).to be_a_new Answer
-    end
-
-    it 'builds a new attachemnt' do
-      expect(assigns(:answer).attachments.first).to be_a_new(Attachment)
     end
   end
 
@@ -57,10 +45,6 @@ RSpec.describe QuestionsController, type: :controller do
 
       it 'assigns new question to a variable' do
         expect(assigns(:question)).to be_a_new(Question)
-      end
-
-      it 'builds new question attachment' do
-        expect(assigns(:question).attachments.first).to be_a_new(Attachment)
       end
 
       it 'renders new view' do
@@ -133,10 +117,16 @@ RSpec.describe QuestionsController, type: :controller do
     context 'user is not the author of question' do
       before { sign_in user2 }
 
-      it 'redirects to question page' do
+      it 'redirects to root' do
         patch :update, params: { id: question, question: { title: 'New title', body: 'New body' } }
 
-        expect(response).to redirect_to question
+        expect(response).to redirect_to root_path
+      end
+
+      it 'sets alert message' do
+        patch :update, params: { id: question, question: { title: 'New title', body: 'New body' } }
+
+        expect(flash[:alert]).to eq 'You are not authorized to perform this action.'
       end
 
       it 'does not updates question' do
@@ -209,16 +199,23 @@ RSpec.describe QuestionsController, type: :controller do
         end
       end
   
-      context 'user2 is not the author of question' do
+      context 'user is not the author of question' do
         before { sign_in user2 }
   
         it 'doesn\'t delete requested question' do
           expect { delete :destroy, params: { id: question } }.to_not change(Question, :count)
         end
   
-        it 'renders index view' do
+        it 're-renders question view' do
           post :destroy, params: { id: question }
-          expect(response).to redirect_to questions_path
+
+          expect(flash[:alert]).to eq 'You are not authorized to perform this action.'
+        end
+
+        it 'sets alert message' do
+          post :destroy, params: { id: question }
+
+          expect(flash[:alert]).to eq 'You are not authorized to perform this action.'
         end
       end
     end

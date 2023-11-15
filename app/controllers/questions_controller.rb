@@ -9,36 +9,33 @@ class QuestionsController < ApplicationController
   after_action :broadcast_question, only: %i[create]
 
   def index
-    respond_with(@questions = Question.all)
+    respond_with(authorize @questions = Question.all)
   end
 
   def show
-    respond_with(@question)
+    respond_with(authorize @question)
   end
 
   def new
-    respond_with(@question = Question.new)
+    respond_with(authorize @question = Question.new)
   end
 
   def create
-    respond_with(@question = current_user.questions.create(question_params))
+    respond_with(authorize @question = current_user.questions.create(question_params))
   end
 
   def edit
+    authorize @question
   end
   
   def update
-    @question.update(question_params) if current_user.author_of?(@question)
-    
+    @question.update(question_params) if authorize @question 
     respond_with(@question)
   end
 
   def destroy
-    if current_user.author_of?(@question)
-      respond_with(@question.destroy)
-    else
-      redirect_to question_path(@question), flash: { alert: 'You are not the author of this question!' }
-    end
+    authorize @question
+    respond_with(@question.destroy)
   end
 
   private
