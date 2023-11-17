@@ -21,4 +21,4 @@ h3 Answers:
   = render @question.answers.by_best
 
 br
-= render 'questions/answer_form'
+= render 'questions/answer_form' if policy(Answer).create?

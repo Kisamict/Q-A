@@ -1,36 +1,38 @@
 class AnswersController < ApplicationController
   include ControllerVotable
 
+  respond_to :js, :html
+
   before_action :authenticate_user!, only: %i[create destroy vote_up]
-  before_action :set_question, only: %i[create update]
-  before_action :set_answer, only: %i[edit update mark_best destroy]
+  before_action :set_answer, only: %i[update mark_best destroy]
+  before_action :set_question, only: %i[create update mark_best]
 
   after_action :broadcast_answer, only: :create
 
-  def create 
+  def create
+    authorize @question
     respond_with(@answer = @question.answers.create(answer_params.merge(user: current_user)))
   end
 
   def update
+    authorize @answer
     respond_with(@answer.update(answer_params))
   end
 
   def destroy 
-    if current_user.author_of?(@answer) 
-      respond_with(@answer.destroy)
-    else
-      redirect_to question_path(@answer.quesiton), flash: { alert: 'You are not the author of this answer!' }
-    end
+    authorize @answer
+    respond_with(@answer.destroy)
   end
 
   def mark_best
-    respond_with(@answer.best!, location: -> { question_path(@answer.question) }) if current_user.author_of?(@answer.question)
+    authorize @answer
+    respond_with(@answer.best!) { |format| format.js { render 'update' } }
   end
 
   private 
 
   def set_question
-    @question = Question.find(params[:question_id])
+    @question = action_name == 'create' ? Question.find(params[:question_id]) : @answer.question
   end
 
   def set_answer

@@ -4,6 +4,6 @@
   = link_to 'Sign in', new_user_session_path
 
 br
-= link_to 'Ask question', new_question_path
+= link_to 'Ask question', new_question_path if policy(Question).new?
 .questions
   = render @questions
