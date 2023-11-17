@@ -1,13 +1,13 @@
 class QuestionsController < ApplicationController
   include ControllerVotable
 
-  before_action :authenticate_user!, only: %i[new create update destroy vote_up]
+  before_action :authenticate_user!, only: %i[new create update destroy vote_up vote_down revote]
   before_action :set_question, only: %i[show edit update destroy vote_up]
   before_action :set_gon_user, only: :show
   before_action :set_gon_question, only: :show
-
+  
   after_action :broadcast_question, only: %i[create]
-
+  
   def index
     respond_with(authorize @questions = Question.all)
   end

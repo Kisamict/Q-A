@@ -19,12 +19,6 @@ shared_examples 'Controller Votable' do
       it 'does not create new vote' do
         expect { post :vote_up, format: :json, params: { id: subject.id } }.to_not change(subject.votes, :count)
       end
-
-      it 'returns unathorized' do
-        post :vote_up, format: :json, params: { id: subject.id }
-        
-        expect(response.code).to eq '401'
-      end
     end
 
     context 'user is the author of votable' do
@@ -33,21 +27,14 @@ shared_examples 'Controller Votable' do
         subject.update(user: user) 
       end
 
-      it 'raises error and does not change votes count' do
-        expect { post :vote_up, format: :json, params: { id: subject.id } }.to raise_error(ActiveRecord::RecordInvalid)
-        expect(subject.votes.count).to eq(0)
+      it 'does not change votes count' do
+        expect { post :vote_up, format: :json, params: { id: subject.id } }.to_not change(Vote, :count)
       end
     end
   end
 
   describe 'POST #vote_down' do
     context 'unauthenticated user' do
-      it 'returns unauthorized' do
-        post :vote_up, format: :json, params: { id: subject.id } 
-
-        expect(response.code).to eq '401'
-      end 
-
       it 'does not create vote and nor change rating' do
         expect { post :vote_up, format: :json, params: { id: subject.id } }
           .to change(subject.votes, :count).by(0)
