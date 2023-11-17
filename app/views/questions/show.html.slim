@@ -14,7 +14,7 @@
     - if @question.comments.any? 
       = render partial: 'shared/comments', collection: @question.comments, as: :comment
 
-  = render partial: 'shared/comment_form', locals: { resource: @question }
+  = render partial: 'shared/comment_form', locals: { resource: @question } if policy(Comment).new?
 
 h3 Answers:
 .answers
