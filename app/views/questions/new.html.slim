@@ -1,2 +1,2 @@
 = render 'shared/errors', resource: @question
-= render 'form'
+= render 'form' if policy(Question).new?

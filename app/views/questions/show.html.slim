@@ -3,9 +3,8 @@
   p = @question.body
   = render 'shared/rating_and_vote_links', votable: @question, klass: 'question', controller: 'questions'
 
-  - if current_user&.author_of?(@question)
-    = link_to 'Edit', edit_question_path(@question)
-    = link_to 'Delete', question_path(@question), method: 'DELETE'
+  = link_to 'Edit', edit_question_path(@question) if policy(@question).edit?
+  = link_to 'Delete', question_path(@question), method: 'DELETE' if policy(@question).destroy?
 
   - if @question.attachments.any? 
     .question-attachments
@@ -15,11 +14,11 @@
     - if @question.comments.any? 
       = render partial: 'shared/comments', collection: @question.comments, as: :comment
 
-  = render partial: 'shared/comment_form', locals: { resource: @question }
+  = render partial: 'shared/comment_form', locals: { resource: @question } if policy(Comment).new?
 
 h3 Answers:
 .answers
   = render @question.answers.by_best
 
 br
-= render 'questions/answer_form'
+= render 'questions/answer_form' if policy(Answer).create?

@@ -1,4 +1,5 @@
 class CommentsController < ApplicationController
+  before_action :authenticate_user!, only: %i[create]
   before_action :set_commentable, only: :create
   after_action :stream_comment, only: :create
 

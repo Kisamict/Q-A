@@ -5,7 +5,8 @@ class AttachmentsController < ApplicationController
   respond_to :js
 
   def destroy
-    respond_with(@attachment.destroy) if current_user.author_of?(@attachment.attachable)
+    authorize @attachment
+    respond_with(@attachment.destroy)
   end
 
   private 
