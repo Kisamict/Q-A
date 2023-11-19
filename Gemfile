@@ -22,6 +22,7 @@ gem 'omniauth-twitter'
 gem 'omniauth-rails_csrf_protection'
 gem 'pundit'
 gem 'webrick'
+gem 'doorkeeper'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
@@ -48,4 +49,5 @@ group :test do
   gem 'webdrivers'
   gem 'rails-controller-testing'
   gem 'pundit-matchers', '~> 3.1'
+  gem 'json_spec'  
 end
