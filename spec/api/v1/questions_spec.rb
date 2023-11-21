@@ -23,7 +23,7 @@ describe 'Questions API' do
       before { get '/api/v1/questions.json', params: { access_token: access_token.token } }
 
       it 'returns list of questions' do
-        expect(response.body).to be_json_eql(questions.to_json)
+        expect(response.body).to be_json_eql(questions.to_json(include: :comments))
       end
 
       %w(id title body created_at updated_at user_id rating).each do |attr|
@@ -48,15 +48,29 @@ describe 'Questions API' do
     end
 
     context 'for user' do
+      let!(:comment) { create(:comment, :for_question, commentable: question) }
+
       before { get "/api/v1/questions/#{question.id}.json", params: { access_token: access_token.token } }
   
       it 'returns requested question' do
-        expect(response.body).to be_json_eql(question.to_json)
+        expect(response.body).to be_json_eql(question.to_json(include: :comments))
       end
   
       %w(id title body created_at updated_at user_id rating).each do |attr|
         it "question contains #{attr}" do
           expect(response.body).to be_json_eql(question.send(attr.to_sym).to_json).at_path("#{attr}")
+        end
+      end
+
+      context 'comments' do
+        it 'are included in question object' do
+          expect(response.body).to have_json_size(1).at_path('comments')
+        end
+
+        %w(id body user_id commentable_type commentable_id).each do |attr|
+          it "contain #{attr} attribute" do
+            expect(response.body).to be_json_eql(comment.send(attr.to_sym).to_json).at_path("comments/0/#{attr}")
+          end
         end
       end
     end
