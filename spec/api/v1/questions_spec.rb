@@ -23,7 +23,7 @@ describe 'Questions API' do
       before { get '/api/v1/questions.json', params: { access_token: access_token.token } }
 
       it 'returns list of questions' do
-        expect(response.body).to be_json_eql(questions.to_json(include: :comments))
+        expect(response.body).to have_json_size(3).at_path('/')
       end
 
       %w(id title body created_at updated_at user_id rating).each do |attr|
@@ -49,18 +49,19 @@ describe 'Questions API' do
 
     context 'for user' do
       let!(:comment) { create(:comment, :for_question, commentable: question) }
+      let!(:attachment) { create(:attachment, :for_question, attachable: question) }
 
       before { get "/api/v1/questions/#{question.id}.json", params: { access_token: access_token.token } }
   
       it 'returns requested question' do
-        expect(response.body).to be_json_eql(question.to_json(include: :comments))
+        expect(response.body).to be_json_eql(question.id.to_json).at_path('id')
       end
   
       %w(id title body created_at updated_at user_id rating).each do |attr|
         it "question contains #{attr}" do
           expect(response.body).to be_json_eql(question.send(attr.to_sym).to_json).at_path("#{attr}")
         end
-      end
+      end 
 
       context 'comments' do
         it 'are included in question object' do
@@ -71,6 +72,16 @@ describe 'Questions API' do
           it "contain #{attr} attribute" do
             expect(response.body).to be_json_eql(comment.send(attr.to_sym).to_json).at_path("comments/0/#{attr}")
           end
+        end
+      end
+
+      context 'attachments' do
+        it 'are included in question object' do
+          expect(response.body).to have_json_size(1).at_path('attachments')
+        end
+
+        it 'contains file attribute in link format' do
+          expect(response.body).to be_json_eql(attachment.file.url.to_json).at_path('attachments/0/url')
         end
       end
     end
