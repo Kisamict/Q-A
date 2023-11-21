@@ -6,4 +6,9 @@ class Api::V1::QuestionsController < ApplicationController
   def index
     respond_with Question.all
   end
+
+  def show
+    @question = Question.find(params[:id])
+    respond_with @question
+  end
 end

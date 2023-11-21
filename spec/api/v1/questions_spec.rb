@@ -20,7 +20,6 @@ describe 'Questions API' do
     end
     
     context 'for user' do
-
       before { get '/api/v1/questions.json', params: { access_token: access_token.token } }
 
       it 'returns list of questions' do
@@ -30,6 +29,34 @@ describe 'Questions API' do
       %w(id title body created_at updated_at user_id rating).each do |attr|
         it "question contains #{attr}" do
           expect(response.body).to be_json_eql(question.send(attr.to_sym).to_json).at_path("0/#{attr}")
+        end
+      end
+    end
+  end
+
+  describe '/show' do
+    context 'for anauthenticated' do
+      it 'returns anauthorized' do
+        get "/api/v1/questions/#{question.id}.json"
+        expect(response.status).to eq 401 
+      end
+
+      it 'returns unauthorized if access_token is invalid' do
+        get "/api/v1/questions/#{question.id}.json", params: { access_token: '1234' }
+        expect(response.status).to eq 401
+      end
+    end
+
+    context 'for user' do
+      before { get "/api/v1/questions/#{question.id}.json", params: { access_token: access_token.token } }
+  
+      it 'returns requested question' do
+        expect(response.body).to be_json_eql(question.to_json)
+      end
+  
+      %w(id title body created_at updated_at user_id rating).each do |attr|
+        it "question contains #{attr}" do
+          expect(response.body).to be_json_eql(question.send(attr.to_sym).to_json).at_path("#{attr}")
         end
       end
     end
