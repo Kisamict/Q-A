@@ -9,6 +9,7 @@ class Api::V1::QuestionsController < Api::V1::BaseController
   end
 
   def create 
+    authorize Question
     respond_with current_resource_owner.questions.create(question_params)
   end
 

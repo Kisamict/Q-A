@@ -1,8 +1,6 @@
 class Api::V1::AnswersController < Api::V1::BaseController 
   before_action :set_question, only: %i[index create]
 
-  respond_to :json
-
   def index 
     respond_with @question.answers
   end
@@ -13,6 +11,7 @@ class Api::V1::AnswersController < Api::V1::BaseController
   end
 
   def create
+    authorize Answer
     respond_with @question.answers.create(answer_params.merge(user: current_resource_owner))
   end
 
