@@ -1,8 +1,4 @@
-class Api::V1::QuestionsController < ApplicationController
-  before_action :doorkeeper_authorize!
-
-  respond_to :json
-
+class Api::V1::QuestionsController < Api::V1::BaseController
   def index
     respond_with Question.all
   end
@@ -10,5 +6,15 @@ class Api::V1::QuestionsController < ApplicationController
   def show
     @question = Question.find(params[:id])
     respond_with @question
+  end
+
+  def create 
+    respond_with current_resource_owner.questions.create(question_params)
+  end
+
+  private
+
+  def question_params
+    params.require(:question).permit(:body, :title)
   end
 end
