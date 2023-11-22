@@ -6,7 +6,7 @@ describe 'Answers API' do
   let(:answer) { answers.first }
   let(:access_token) { create(:access_token) }
 
-  describe '/index' do
+  describe 'GET /index' do
     context 'unauthorized' do
       it 'returns anautharized' do
         get "/api/v1/questions/#{question.id}/answers.json"
@@ -33,7 +33,7 @@ describe 'Answers API' do
     end
   end
 
-  describe '/show' do
+  describe 'GET /show' do
     context 'unauthorized' do
       it 'returns anautharized' do
         get "/api/v1/answers/#{answer.id}.json"
@@ -82,6 +82,64 @@ describe 'Answers API' do
 
         it 'contains file attribute in link format' do
           expect(response.body).to be_json_eql(attachment.file.url.to_json).at_path('attachments/0/url')
+        end
+      end
+    end
+  end
+
+  describe 'POST /create' do
+    context 'for anauthenticated' do
+      it 'returns anauthorized' do
+        post "/api/v1/questions/#{question.id}/answers.json"
+        expect(response.status).to eq 401 
+      end
+
+      it 'returns unauthorized if access_token is invalid' do
+        post "/api/v1/questions/#{question.id}/answers.json", params: { access_token: '1234' }
+        expect(response.status).to eq 401
+      end
+    end
+
+    context 'for authenticated' do
+      context 'with valid params' do
+        let(:valid_post_request) do
+          post "/api/v1/questions/#{question.id}/answers.json", params: {
+            answer: attributes_for(:answer),
+            access_token: access_token.token
+          }
+        end
+
+        it 'creates new answer' do
+          expect { valid_post_request }.to change(Answer, :count).by(1)
+        end
+
+        it 'returns created answer with 201 status' do
+          valid_post_request
+          expect(response.body).to be_json_eql(Answer.last.to_json(include: [:attachments, :comments]))
+          expect(response.status).to eq 201
+        end
+        
+        it 'sets token owner as question author' do
+          valid_post_request
+          expect(Answer.last.user_id).to eq access_token.resource_owner_id
+        end
+      end
+
+      context 'with invalid params' do
+        let(:invalid_post_request) do
+          post "/api/v1/questions/#{question.id}/answers.json", params: {
+            answer: { body: '' },
+            access_token: access_token.token
+          }
+        end
+
+        it 'returns 422 status' do
+          invalid_post_request
+          expect(response.status).to eq 422
+        end
+
+        it 'doesnt create new question' do
+          expect { invalid_post_request }.to_not change(Answer, :count)
         end
       end
     end
