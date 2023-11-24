@@ -3,12 +3,19 @@ require 'rails_helper'
 describe 'Profile API' do
   let(:user) { create(:user) }
   let(:access_token) { create(:access_token, resource_owner_id: user.id) }
-  
+
+  def do_request(params = {})
+    get request_url, params: params
+  end
+
   describe 'GET /me' do
-    it_behaves_like 'API Authenticable', { url: '/api/v1/profiles/me.json' }
+    let(:request_url) { '/api/v1/profiles/me.json' }
+    context 'for unauthentocatied' do
+      it_behaves_like 'API Authenticable'
+    end
 
     context 'for user' do
-      before { get '/api/v1/profiles/me.json', params: { access_token: access_token.token } }
+      before { get request_url, params: { access_token: access_token.token } }
 
       it 'returns 200 status' do
         expect(response).to be_successful
@@ -29,12 +36,16 @@ describe 'Profile API' do
   end
 
   describe 'GET #index' do
-    it_behaves_like 'API Authenticable', { url: '/api/v1/profiles.json' }
+    let(:request_url) { '/api/v1/profiles.json' }
+
+    context 'for unauthentocatied' do
+      it_behaves_like 'API Authenticable'
+    end
 
     context 'for user' do
       let!(:users) { create_list(:user, 5) }
 
-      before { get '/api/v1/profiles.json', params: { access_token: access_token.token } }
+      before { get request_url, params: { access_token: access_token.token } }
 
       it 'returns 200 status' do
         expect(response).to be_successful        
