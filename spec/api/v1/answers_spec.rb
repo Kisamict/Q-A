@@ -7,19 +7,18 @@ describe 'Answers API' do
   let(:access_token) { create(:access_token) }
 
   describe 'GET /index' do
-    context 'unauthorized' do
-      it 'returns anautharized' do
-        get "/api/v1/questions/#{question.id}/answers.json"
-        expect(response.status).to eq 401
-      end
+    let(:request_url) { "/api/v1/questions/#{question.id}/answers.json" }
 
-      it 'returns unathorized if access token is invalid' do
-        get "/api/v1/questions/#{question.id}/answers.json", params: { access_token: '123456' }
-      end
+    def do_request(params = {})
+      get request_url, params: params
+    end
+
+    context 'unauthorized' do
+      it_behaves_like 'API Authenticable'
     end
 
     context 'for user' do
-      before { get "/api/v1/questions/#{question.id}/answers.json", params: { access_token: access_token.token } }
+      before { get request_url, params: { access_token: access_token.token } }
 
       it 'returns list of answers for requested question' do
         expect(response.body).to have_json_size(3)
@@ -34,15 +33,14 @@ describe 'Answers API' do
   end
 
   describe 'GET /show' do
-    context 'unauthorized' do
-      it 'returns anautharized' do
-        get "/api/v1/answers/#{answer.id}.json"
-        expect(response.status).to eq 401
-      end
+    let(:request_url) { "/api/v1/answers/#{answer.id}.json" }
 
-      it 'returns unathorized if access token is invalid' do
-        get "/api/v1/answers/#{answer.id}.json", params: { access_token: '123456' }
-      end
+    def do_request(params = {})
+      get request_url, params: params
+    end
+
+    context 'unauthorized' do
+      it_behaves_like 'API Authenticable'
     end
 
     context 'for user' do
@@ -51,7 +49,7 @@ describe 'Answers API' do
       let!(:attachments) { create_list(:attachment, 3, attachable: answer) }
       let(:attachment) { attachments.first }
 
-      before { get "/api/v1/answers/#{answer.id}.json", params: { access_token: access_token.token } }
+      before { get request_url, params: { access_token: access_token.token } }
 
       it 'returns requested answer' do
         expect(response.body).to be_json_eql(answer.id.to_json).at_path('id')
@@ -76,34 +74,26 @@ describe 'Answers API' do
       end
 
       context 'attachments' do
-        it 'are included in answer object' do
-          expect(response.body).to have_json_size(3).at_path('attachments')
-        end
-
-        it 'contains file attribute in link format' do
-          expect(response.body).to be_json_eql(attachment.file.url.to_json).at_path('attachments/0/url')
-        end
+        it_behaves_like 'API Attachable'
       end
     end
   end
 
   describe 'POST /create' do
-    context 'for anauthenticated' do
-      it 'returns anauthorized' do
-        post "/api/v1/questions/#{question.id}/answers.json"
-        expect(response.status).to eq 401 
-      end
+    let(:request_url) { "/api/v1/questions/#{question.id}/answers.json" }
 
-      it 'returns unauthorized if access_token is invalid' do
-        post "/api/v1/questions/#{question.id}/answers.json", params: { access_token: '1234' }
-        expect(response.status).to eq 401
-      end
+    def do_request(params = {})
+      post request_url, params: params
+    end
+
+    context 'for unauthenticated' do
+      it_behaves_like 'API Authenticable'
     end
 
     context 'for authenticated' do
       context 'with valid params' do
         let(:valid_post_request) do
-          post "/api/v1/questions/#{question.id}/answers.json", params: {
+          post request_url, params: {
             answer: attributes_for(:answer),
             access_token: access_token.token
           }
@@ -127,7 +117,7 @@ describe 'Answers API' do
 
       context 'with invalid params' do
         let(:invalid_post_request) do
-          post "/api/v1/questions/#{question.id}/answers.json", params: {
+          post request_url, params: {
             answer: { body: '' },
             access_token: access_token.token
           }
