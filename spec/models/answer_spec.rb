@@ -15,6 +15,8 @@ RSpec.describe Answer, type: :model do
     it { should validate_presence_of :body }
   end
 
+  it_behaves_like 'Votable'
+
   context '#best!' do
     let!(:question) { create(:question) }
     let!(:answers)  { create_list(:answer, 3, question: question) }
