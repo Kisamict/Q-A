@@ -3,24 +3,21 @@ require 'rails_helper'
 describe 'Questions API' do
   let!(:questions) { create_list(:question, 3) }
   let(:question) { questions.first }
-  let(:user) { create(:user) }
-  let(:access_token) { create(:access_token, resource_owner_id: user.id) } 
+  let(:access_token) { create(:access_token) } 
 
   describe 'GET /index' do
-    context 'for anauthenticated' do
-      it 'returns anauthorized' do
-        get '/api/v1/questions.json'
-        expect(response.status).to eq 401 
-      end
+    let(:request_url) { '/api/v1/questions.json' }
 
-      it 'returns unauthorized if access_token is invalid' do
-        get '/api/v1/questions.json', params: { access_token: '1234' }
-        expect(response.status).to eq 401
-      end
+    def do_request(params = {})
+      get request_url, params: params
+    end
+    
+    context 'for unauthenticated' do
+      it_behaves_like 'API Authenticable'
     end
     
     context 'for user' do
-      before { get '/api/v1/questions.json', params: { access_token: access_token.token } }
+      before { get request_url, params: { access_token: access_token.token } }
 
       it 'returns list of questions' do
         expect(response.body).to have_json_size(3).at_path('/')
@@ -35,23 +32,21 @@ describe 'Questions API' do
   end
 
   describe 'GET /show' do
-    context 'for anauthenticated' do
-      it 'returns anauthorized' do
-        get "/api/v1/questions/#{question.id}.json"
-        expect(response.status).to eq 401 
-      end
+    let(:request_url) { "/api/v1/questions/#{question.id}.json" }
+    
+    def do_request(params = {})
+      get request_url, params: params
+    end
 
-      it 'returns unauthorized if access_token is invalid' do
-        get "/api/v1/questions/#{question.id}.json", params: { access_token: '1234' }
-        expect(response.status).to eq 401
-      end
+    context 'for unauthenticated' do
+      it_behaves_like 'API Authenticable'
     end
 
     context 'for user' do
       let!(:comment) { create(:comment, :for_question, commentable: question) }
       let!(:attachment) { create(:attachment, :for_question, attachable: question) }
 
-      before { get "/api/v1/questions/#{question.id}.json", params: { access_token: access_token.token } }
+      before { get request_url, params: { access_token: access_token.token } }
   
       it 'returns requested question' do
         expect(response.body).to be_json_eql(question.id.to_json).at_path('id')
@@ -64,46 +59,30 @@ describe 'Questions API' do
       end 
 
       context 'comments' do
-        it 'are included in question object' do
-          expect(response.body).to have_json_size(1).at_path('comments')
-        end
-
-        %w(id body user_id commentable_type commentable_id).each do |attr|
-          it "contain #{attr} attribute" do
-            expect(response.body).to be_json_eql(comment.send(attr.to_sym).to_json).at_path("comments/0/#{attr}")
-          end
-        end
+        it_behaves_like 'API Commentable'
       end
 
       context 'attachments' do
-        it 'are included in question object' do
-          expect(response.body).to have_json_size(1).at_path('attachments')
-        end
-
-        it 'contains file attribute in link format' do
-          expect(response.body).to be_json_eql(attachment.file.url.to_json).at_path('attachments/0/url')
-        end
+        it_behaves_like 'API Attachable'
       end
     end
   end
 
   describe 'POST /create' do
-    context 'for anauthenticated' do
-      it 'returns anauthorized' do
-        post "/api/v1/questions.json"
-        expect(response.status).to eq 401 
-      end
+    let(:request_url) { '/api/v1/questions.json' }
 
-      it 'returns unauthorized if access_token is invalid' do
-        post "/api/v1/questions.json", params: { access_token: '1234' }
-        expect(response.status).to eq 401
-      end
+    def do_request(params = {})
+      post request_url, params: params
+    end
+
+    context 'for anauthenticated' do
+      it_behaves_like 'API Authenticable'
     end
 
     context 'for authenticated' do
       context 'with valid params' do
         let(:valid_post_request) do
-          post '/api/v1/questions.json', params: {
+          post request_url, params: {
             question: attributes_for(:question),
             access_token: access_token.token
           }
@@ -121,13 +100,13 @@ describe 'Questions API' do
         
         it 'sets token owner as question author' do
           valid_post_request
-          expect(Question.last.user_id).to eq user.id
+          expect(Question.last.user_id).to eq access_token.resource_owner_id
         end
       end
 
       context 'with invalid params' do
         let(:invalid_post_request) do
-          post '/api/v1/questions.json', params: {
+          post request_url, params: {
             question: { title: '', body: '' },
             access_token: access_token.token
           }

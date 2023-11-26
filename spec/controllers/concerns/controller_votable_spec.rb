@@ -9,9 +9,9 @@ shared_examples 'Controller Votable' do
       before { sign_in user }
       
       it 'creates new vote_up with value == 1 ' do
-          expect { post :vote_up, format: :json, params: { id: subject.id } }.to change(subject.votes, :count).by 1
+        expect { post :vote_up, format: :json, params: { id: subject.id } }.to change(subject.votes, :count).by 1
 
-          expect(subject.votes.last.value).to eq 1 
+        expect(subject.votes.last.value).to eq 1 
       end
     end
     
