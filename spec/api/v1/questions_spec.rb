@@ -71,13 +71,7 @@ describe 'Questions API' do
       end
 
       context 'attachments' do
-        it 'are included in question object' do
-          expect(response.body).to have_json_size(1).at_path('attachments')
-        end
-
-        it 'contains file attribute in link format' do
-          expect(response.body).to be_json_eql(attachment.file.url.to_json).at_path('attachments/0/url')
-        end
+        it_behaves_like 'API Attachable'
       end
     end
   end
