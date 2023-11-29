@@ -10,4 +10,6 @@ class Question < ApplicationRecord
   validates :title, :body, presence: true
 
   accepts_nested_attributes_for :attachments, reject_if: :all_blank
+
+  scope :daily_questions, -> { where(created_at: (-1.day.from_now..Time.zone.now))}
 end

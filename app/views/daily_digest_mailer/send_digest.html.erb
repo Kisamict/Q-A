@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+    <p>Hi! Here is your daily digest from QnA: </p>
+    <% if @recent_questions.any? %>
+      <% @recent_questions.each do |question| %>
+        <%= link_to question.title, question_path(question)  %>
+      <% end %>
+    <% else %>
+      <p>There is no new questions, but we are always welcome to see you on our website again!</p>
+    <% end %>
+  <body>
+  </body>
+</html>
