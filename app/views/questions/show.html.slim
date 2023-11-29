@@ -1,5 +1,8 @@
 .question[id="question-#{@question.id}"]
   h1 = @question.title
+  = link_to 'Subscribe', question_subscriptions_path(@question), method: 'POST'
+  - if current_user.subscriptions.any?
+    = link_to 'Unsubscribe', question_subscription_path(@question, current_user.find_subscription(@question)), method: 'DELETE' 
   p = @question.body
   = render 'shared/rating_and_vote_links', votable: @question, klass: 'question', controller: 'questions'
 
