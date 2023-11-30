@@ -12,7 +12,7 @@ RSpec.describe Subscription, type: :model do
     it do
       should validate_uniqueness_of(:user_id)
         .scoped_to(:question_id)
-        .with_message('cannot subscribe for same question twice')
+        .with_message('Cannot subscribe for same question twice')
     end
   end
 end
