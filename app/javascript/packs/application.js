@@ -41,4 +41,15 @@ document.addEventListener("turbolinks:load", function () {
       $(`.revote[data-id="${votableId}"][data-klass="${votableKlass}"]`).show();
     }
   })
+
+  $(document).on('ajax:success', '.subscribe, .unsubscribe', function (e) {
+    console.log(this.classList.contains('subscribe'))
+    if (this.classList.contains('subscribe')) {
+      $(this).hide();
+      $('.unsubscribe').show();
+    } else {
+      $(this).hide();
+      $('.subscribe').show();
+    }
+  })
 });
