@@ -6,7 +6,7 @@
     <p>Hi! Here is your daily digest from QnA: </p>
     <% if @recent_questions.any? %>
       <% @recent_questions.each do |question| %>
-        <%= link_to question.title, question_path(question)  %>
+        <%= link_to question.title, question_url(question)  %>
       <% end %>
     <% else %>
       <p>There is no new questions, but we are always welcome to see you on our website again!</p>
