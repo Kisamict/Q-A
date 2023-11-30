@@ -11,7 +11,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def destroy
-    @subscription = current_user.subscriptions.find(params[:id])
+    @subscription = current_user.find_subscription(@question)
 
     head @subscription.destroy ? 200 : 500
   end

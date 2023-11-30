@@ -41,4 +41,19 @@ RSpec.describe User, type: :model do
       expect(user.find_subscription(question)).to be_nil
     end
   end
+
+  context '.subscribed?' do
+    let(:user) { create(:user) }
+    let(:question) { create(:question) }
+    let!(:subscription) { create(:subscription, user: user, question: question) }
+
+    it 'returns true if user subscribed' do
+      expect(user.subscribed?(question)).to be_truthy
+    end
+
+    it 'returns false if user not subscribed' do
+      subscription.destroy!
+      expect(user.subscribed?(question)).to be_falsey
+    end
+  end
 end

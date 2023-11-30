@@ -1,64 +1,67 @@
 require 'rails_helper'
 
 RSpec.describe SubscriptionsController, type: :controller do
-  let(:question) { create(:question) }
+  let!(:question) { create(:question) }
   let(:user) { create(:user) }
 
   describe 'POST #create' do
+    let(:post_request) { post :create, params: { question_id: question.id }, format: :js }
+
     context 'for authenticated user' do
       before { sign_in user }
 
       it 'creates new subscription for user' do
-        expect { post :create, params: { question_id: question.id } }.to change(user.subscriptions, :count)
+        expect { post_request }.to change(user.subscriptions, :count)
       end
   
       it 'subscribes user to a requested question' do
-        post :create, params: { question_id: question.id }
+        post_request
         expect(user.subscriptions.last.question).to eq question
       end
 
-      it 'redirects back to question' do
-        post :create, params: { question_id: question.id }
-        expect(response).to redirect_to question_path(question)
+      it 'returns 201' do
+        post_request
+        expect(response.status).to eq 201
       end
     end
 
     context 'for unauthenticated user' do
       it 'doesnt create subscription' do
-        expect { post :create, params: { question_id: question.id } }.to_not change(Subscription, :count)
+        expect { post_request }.to_not change(Subscription, :count)
       end
 
-      it 'redirects to sign in page' do
-        post :create, params: { question_id: question.id }
-        expect(response).to redirect_to new_user_session_path
+      it 'returns unauthorized' do
+        post_request
+        expect(response.status).to eq 401
       end
     end
   end
 
   describe 'DELETE #destroy' do
     let!(:subscription) { create(:subscription, user: user, question: question) }
+    let(:delete_request) { delete :destroy, params: { question_id: question.id, id: subscription.id }, format: :js }
 
     context 'for authenticated user' do
       before { sign_in user }
 
       it 'deletes users subsription' do
-        expect { delete :destroy, params: { question_id: question.id, id: subscription.id } }.to change(user.subscriptions, :count).by(-1)
+        expect { delete_request }.to change(user.subscriptions, :count).by(-1)
       end
 
-      it 'redirects back to question' do
-        delete :destroy, params: { question_id: question.id, id: subscription.id }
-        expect(response).to redirect_to question_path(question)
+      it 'returns 200' do
+        delete_request
+        expect(response.status).to eq 200
       end
     end
 
     context 'for unauthenticated user' do
       it 'doesnt delete subscription' do
-        expect { delete :destroy, params: { question_id: question.id, id: subscription.id } }.to_not change(Subscription, :count)
+        expect { delete_request }.to_not change(Subscription, :count)
       end
 
-      it 'redirects to sign in page' do
-        delete :destroy, params: { question_id: question.id, id: subscription.id }
-        expect(response).to redirect_to new_user_session_path
+      it 'returns unauthorized' do
+        delete_request
+        expect(response.status).to eq 401 
       end
     end
   end

@@ -51,4 +51,8 @@ class User < ApplicationRecord
   def find_subscription(question)
     subscriptions.find_by(question_id: question.id)
   end
+
+  def subscribed?(question)
+    find_subscription(question).present?
+  end
 end
