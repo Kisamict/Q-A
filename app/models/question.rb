@@ -14,4 +14,12 @@ class Question < ApplicationRecord
   accepts_nested_attributes_for :attachments, reject_if: :all_blank
 
   scope :daily_questions, -> { where(created_at: (-1.day.from_now..Time.zone.now))}
+
+  after_create :subscribe_author
+
+  private 
+
+  def subscribe_author
+    subscriptions.create(user: user)
+  end
 end

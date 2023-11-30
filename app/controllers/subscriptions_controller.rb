@@ -2,14 +2,18 @@ class SubscriptionsController < ApplicationController
   before_action :authenticate_user!, only: %i[create destroy]
   before_action :set_question, only: %i[create destroy]
 
+  respond_to :js
+
   def create
-    @subscription = @question.subscriptions.create(user: current_user)
-    respond_with(@subscription, location: question_path(@question))
+    @subscription = @question.subscriptions.new(user: current_user)
+
+    head @subscription.save ? 201 : 500
   end
 
   def destroy
     @subscription = current_user.subscriptions.find(params[:id])
-    respond_with(@subscription.destroy, location: question_path(@question))
+
+    head @subscription.destroy ? 200 : 500
   end
   
   private
