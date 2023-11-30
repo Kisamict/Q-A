@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_11_29_122837) do
+ActiveRecord::Schema.define(version: 2023_11_30_082422) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -115,6 +115,7 @@ ActiveRecord::Schema.define(version: 2023_11_29_122837) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["question_id"], name: "index_subscriptions_on_question_id"
+    t.index ["user_id", "question_id"], name: "unique_user_question_subscription", unique: true
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
