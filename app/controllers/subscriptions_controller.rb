@@ -5,13 +5,13 @@ class SubscriptionsController < ApplicationController
   respond_to :js
 
   def create
-    @subscription = @question.subscriptions.new(user: current_user)
-
+    authorize @subscription = @question.subscriptions.new(user: current_user)
+    
     head @subscription.save ? 201 : 500
   end
 
   def destroy
-    @subscription = current_user.find_subscription(@question)
+    authorize @subscription = current_user.find_subscription(@question)
 
     head @subscription.destroy ? 200 : 500
   end
