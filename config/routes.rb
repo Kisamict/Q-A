@@ -33,6 +33,7 @@ Rails.application.routes.draw do
 
   resources :questions, concerns: [:votable, :commentable] do
     resources :answers, except: [:edit], concerns: [:votable, :commentable], shallow: true
+    resources :subscriptions, only: [:create, :destroy]
   end
   
   resources :attachments, only: :destroy

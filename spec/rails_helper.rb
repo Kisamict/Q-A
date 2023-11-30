@@ -9,6 +9,7 @@ require 'pundit/matchers'
 require "pundit/rspec"
 require 'spec_helper'
 require 'capybara/rails'
+require 'sidekiq/testing'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -35,6 +36,8 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 
 Capybara.javascript_driver = :webkit
+
+Sidekiq::Testing.fake!
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods

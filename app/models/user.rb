@@ -12,6 +12,7 @@ class User < ApplicationRecord
   has_many :votes, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :authorizations, dependent: :destroy
+  has_many :subscriptions, dependent: :destroy
   # has_many :access_grants,
   #          class_name: 'Doorkeeper::AccessGrant',
   #          foreign_key: :resource_owner_id,
@@ -45,5 +46,13 @@ class User < ApplicationRecord
       
       user
     end
+  end
+
+  def find_subscription(question)
+    subscriptions.find_by(question_id: question.id)
+  end
+
+  def subscribed?(question)
+    find_subscription(question).present?
   end
 end

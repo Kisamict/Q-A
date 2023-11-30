@@ -5,6 +5,7 @@ RSpec.describe User, type: :model do
     it { should have_many(:questions).dependent(:destroy) }
     it { should have_many(:answers).dependent(:destroy) }
     it { should have_many(:votes).dependent(:destroy) }
+    it { should have_many(:subscriptions).dependent(:destroy) }
   end
 
   describe 'validations' do
@@ -23,6 +24,36 @@ RSpec.describe User, type: :model do
 
     it 'returns false' do
       expect(user).to_not be_author_of(question2)
+    end
+  end
+
+  context '#find_subscription' do
+    let(:user)      { create(:user) }
+    let(:question)  { create(:question) }
+    let!(:subscription) { create(:subscription, user: user, question: question) }
+
+    it 'returns subscription if user subscribed for question' do
+      expect(user.find_subscription(question)).to eq subscription
+    end
+
+    it 'returns nil if user is not subscribed for question' do
+      subscription.destroy!
+      expect(user.find_subscription(question)).to be_nil
+    end
+  end
+
+  context '.subscribed?' do
+    let(:user) { create(:user) }
+    let(:question) { create(:question) }
+    let!(:subscription) { create(:subscription, user: user, question: question) }
+
+    it 'returns true if user subscribed' do
+      expect(user.subscribed?(question)).to be_truthy
+    end
+
+    it 'returns false if user not subscribed' do
+      subscription.destroy!
+      expect(user.subscribed?(question)).to be_falsey
     end
   end
 end
