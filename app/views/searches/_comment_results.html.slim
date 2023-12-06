@@ -1,0 +1,8 @@
+.comment-results
+  - if result.commentable_type == 'Answer'
+    = link_to "#{result.commentable.question.title}", result.commentable.question
+  - else
+    = link_to "#{result.commentable.title}", result.commentable
+  p = result.body
+  p = result.user.email
+br
