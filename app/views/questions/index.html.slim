@@ -1,3 +1,9 @@
+= form_with url: search_path, method: :get do |f|
+  = f.text_field :search, placeholder: 'Search for anything!'
+  = f.select :scope, %i[All Answer Question Comment]
+  = f.submit 'Search'
+br
+
 - if current_user
   = link_to 'Sign out', destroy_user_session_path, method: :delete 
 - else

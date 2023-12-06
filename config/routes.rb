@@ -35,7 +35,8 @@ Rails.application.routes.draw do
     resources :answers, except: [:edit], concerns: [:votable, :commentable], shallow: true
     resources :subscriptions, only: [:create, :destroy]
   end
-  
+
+  resource :search, only: :show
   resources :attachments, only: :destroy
 
   patch 'mark_best_answer/:id', to: 'answers#mark_best', as: 'answers_mark_best'
