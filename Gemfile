@@ -26,7 +26,7 @@ gem 'doorkeeper'
 gem 'active_model_serializers'
 gem 'oj'
 gem 'oj_mimic_json'
-gem 'sidekiq'
+gem 'sidekiq', '~> 6.0'
 gem 'whenever'
 gem 'sinatra', require: false
 gem 'mysql2'

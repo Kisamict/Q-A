@@ -10,6 +10,11 @@ server "159.65.25.109", user: "deployer", roles: %w{app db web}, primary: true
 set :rails_env, :production
 set :stage, :production
 
+set :sidekiq_roles => :worker
+set :sidekiq_default_hooks => true
+set :sidekiq_env => fetch(:rack_env, fetch(:rails_env, fetch(:stage)))
+set :sidekiq_config_files, ['sidekiq.yml']
+
 # role-based syntax
 # ==================
 
@@ -45,7 +50,7 @@ set :stage, :production
  set :ssh_options, {
    keys: %w(/home/andrew/.ssh/id_rsa.pub),
    forward_agent: true,
-   auth_methods: %w(pulbickey password),
+   auth_methods: %w(publickey password),
    port: 4321
  }
 
