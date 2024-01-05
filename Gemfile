@@ -27,7 +27,7 @@ gem 'active_model_serializers'
 gem 'oj'
 gem 'oj_mimic_json'
 gem 'sidekiq', '~> 6.0'
-gem 'whenever'
+gem 'whenever', require: false
 gem 'sinatra', require: false
 gem 'mysql2'
 gem 'thinking-sphinx'
