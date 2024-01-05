@@ -8,6 +8,7 @@ require 'capistrano/rails'
 require 'capistrano/rbenv'
 require 'capistrano/sidekiq'
 require 'whenever/capistrano'
+require 'thinking_sphinx/capistrano'
 install_plugin Capistrano::Sidekiq
 install_plugin Capistrano::Sidekiq::Systemd
 
